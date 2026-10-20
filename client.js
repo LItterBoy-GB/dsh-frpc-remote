@@ -11,8 +11,8 @@ window.__ModuleLoader__.load({
       tokenHint: '已保存的密钥不会显示。留空保留原值。', clearToken: '清除已保存的 Token', proxyName: '代理名称', proxyType: '代理类型',
       remotePort: 'TCP 映射端口', publicUrl: '远程访问地址', publicHint: '使用独立域名或端口的根地址。HTTPS 需在入口部署 TLS 反向代理并保留 Host、Origin 和 WebSocket。',
       advanced: '高级设置', trustedCaFile: 'frps TLS CA 文件', tlsServerName: 'frps TLS 证书名称', allowInsecureHttp: '允许明文 HTTP（仅用于可信网络）',
-      restartDelayMs: '异常重启间隔（毫秒）', maxRestarts: '最大异常重启次数', save: '保存并应用', saving: '正在保存…', saved: '已保存，正在应用网络配置。',
-      failure: '保存失败。配置可能已被其他窗口修改，请保留草稿并重新加载页面。', loading: '正在读取配置…', unavailable: '当前宿主未提供远程访问配置。',
+      restartDelayMs: '异常重启间隔（毫秒）', maxRestarts: '最大异常重启次数', save: '保存并应用', saving: '正在保存…', saved: '配置已保存。',
+      failure: '保存结果尚未确认。请等待连接恢复后核对配置，当前草稿已保留。', conflict: '配置已发生变化，本次修改未被确认。请载入最新配置后重新编辑。', reloadConfig: '载入最新配置', discardDraft: '载入最新配置将放弃当前未保存的草稿，是否继续？', loading: '正在读取配置…', unavailable: '当前宿主未提供远程访问配置。',
       status: '连接状态', refresh: '刷新状态', open: '打开远程入口', copy: '复制访问链接', copied: '访问链接已复制。链接含访问令牌，请仅交给可信使用者。',
       statusFailure: '状态暂时不可用，稍后自动重试。', disabled: '未启用', starting: '正在准备', connecting: '正在连接', connected: '代理已连接', retrying: '等待重启', error: '连接失败',
       invalidRequired: '启用前请填写可执行文件、服务器地址、代理名称和访问地址。', invalidUrl: '请输入 HTTP(S) 根地址，不含查询参数、用户名或路径。',
@@ -24,7 +24,7 @@ window.__ModuleLoader__.load({
       enabled: 'Enable remote access', frpcPath: 'frpc executable', serverAddr: 'frps address', serverPort: 'frps port', token: 'frps token', tokenHint: 'Stored secrets are hidden. Leave blank to keep the current token.',
       clearToken: 'Clear the saved token', proxyName: 'Proxy name', proxyType: 'Proxy type', remotePort: 'TCP remote port', publicUrl: 'Public URL', publicHint: 'Use a dedicated root URL. HTTPS requires a TLS reverse proxy preserving Host, Origin and WebSocket upgrades.',
       advanced: 'Advanced', trustedCaFile: 'frps TLS CA file', tlsServerName: 'frps TLS server name', allowInsecureHttp: 'Allow plain HTTP (trusted networks only)', restartDelayMs: 'Restart delay (ms)', maxRestarts: 'Maximum restarts',
-      save: 'Save and apply', saving: 'Saving…', saved: 'Saved. Applying network configuration.', failure: 'Save failed. Another window may have changed this configuration. Keep your draft and reload.', loading: 'Loading configuration…', unavailable: 'Remote access configuration is unavailable on this host.',
+      save: 'Save and apply', saving: 'Saving…', saved: 'Configuration saved.', failure: 'Save is not yet confirmed. Check the configuration after reconnecting. Your draft is retained.', conflict: 'The configuration changed and this edit is not confirmed. Load the latest configuration before editing again.', reloadConfig: 'Load latest configuration', discardDraft: 'Loading the latest configuration discards this unsaved draft. Continue?', loading: 'Loading configuration…', unavailable: 'Remote access configuration is unavailable on this host.',
       status: 'Connection', refresh: 'Refresh status', open: 'Open remote entry', copy: 'Copy access link', copied: 'Access link copied. It contains a token; share only with trusted operators.', statusFailure: 'Status unavailable; retrying automatically.', disabled: 'Disabled', starting: 'Preparing', connecting: 'Connecting', connected: 'Proxy connected', retrying: 'Restart pending', error: 'Connection failed',
       invalidRequired: 'Provide the executable, server address, proxy name and public URL before enabling.', invalidUrl: 'Enter an HTTP(S) root URL without credentials, query or path.', insecure: 'Explicitly allow plain HTTP to use this URL.', invalidPort: 'Ports must be integers from 1 to 65535.', invalidAdvanced: 'Restart delay: 500–60000; restart count: 0–20.', nameHint: 'Must be unique on the same frps server.', secretSet: 'Token configured', secretEmpty: 'Token not configured',
     }
@@ -64,10 +64,11 @@ window.__ModuleLoader__.load({
     Object.assign(en, {
       hostFiles: 'Choose host file', allowedDirectories: 'Allowed host directories', rootsHint: 'One absolute directory per line, up to 20. Empty disables browsing. Selection inserts a path without changing workspace or uploading content.', rootsTooMany: 'Allow up to 20 directories.', root: 'Allowed directory', up: 'Parent', filter: 'Filter this directory', filterAction: 'Filter', file: 'File', directory: 'Directory', close: 'Close', cancel: 'Cancel', insertPath: 'Insert full path', selectedFile: 'Selected file', noRoots: 'No allowed directories. Add directories under Settings → Remote access → Host files and save.', hostFilesSection: 'Host files', fileEmpty: 'No matching files or directories.', fileLoading: 'Loading directory…', fileFailure: 'Cannot browse host files. Check the connection and directory permissions.', fileTruncated: 'Only part of the directory is shown. Filter by name or open a more specific directory.', fileNote: 'Browse the computer running dsh. Insert appends the full path to this draft.', fileInsertFailure: 'Cannot insert into this conversation right now. Keep the selection and retry.', noSelected: 'Choose a file to insert.', fileSkipped: 'Symbolic links, directory junctions and inaccessible entries are hidden.',
     })
-    Object.assign(zh, { browseScope: '浏览范围', allDirectories: '所有目录', selectedDirectories: '指定多个目录', allDirectoriesHint: '可浏览运行 dsh 的系统账号有权限访问的所有目录；支持磁盘切换和完整路径跳转。', jumpDirectory: '跳转到目录', jump: '跳转', customDirectory: '自定义路径' })
-    Object.assign(en, { browseScope: 'Browse scope', allDirectories: 'All directories', selectedDirectories: 'Multiple specified directories', allDirectoriesHint: 'Browse directories accessible to the account running dsh, with drive selection and absolute-path navigation.', jumpDirectory: 'Go to directory', jump: 'Go', customDirectory: 'Custom path' })
+    Object.assign(zh, { invalidRoot: '请为每项填写完整目录，例如 H:\\资料 或 /home/user/data。', browseScope: '浏览范围', allDirectories: '所有目录', selectedDirectories: '指定多个目录', allDirectoriesHint: '可浏览运行 dsh 的系统账号有权限访问的所有目录；支持磁盘切换和完整路径跳转。', jumpDirectory: '跳转到目录', jump: '跳转', customDirectory: '自定义路径' })
+    Object.assign(en, { invalidRoot: 'Enter an absolute directory for every entry.', browseScope: 'Browse scope', allDirectories: 'All directories', selectedDirectories: 'Multiple specified directories', allDirectoriesHint: 'Browse directories accessible to the account running dsh, with drive selection and absolute-path navigation.', jumpDirectory: 'Go to directory', jump: 'Go', customDirectory: 'Custom path' })
     const filesCss = `
 .frpc-form textarea.frpc-control{height:112px;resize:vertical;min-height:84px;line-height:22px}.frpc-root-field{display:grid;gap:7px}
+.frpc-form select.frpc-control,.frpc-picker select.frpc-control{color-scheme:inherit}.frpc-form select.frpc-control option,.frpc-picker select.frpc-control option{background-color:Canvas;color:CanvasText}
 .frpc-host-trigger{display:inline-flex;align-items:center;justify-content:center;min-height:32px;padding:4px 9px;border:1px solid color-mix(in srgb,currentColor 18%,transparent);border-radius:6px;background:transparent;color:inherit;font:inherit;font-size:12px;line-height:20px;cursor:pointer;white-space:nowrap}.frpc-host-trigger:disabled{opacity:.5;cursor:default}.frpc-host-trigger:focus-visible{outline:2px solid #2563eb;outline-offset:3px}
 .frpc-picker{--frpc-line:color-mix(in srgb,currentColor 18%,transparent);--frpc-muted:color-mix(in srgb,currentColor 68%,transparent);--frpc-accent:#2563eb;--frpc-error:light-dark(#dc2626,#fca5a5);width:min(680px,calc(100vw - 32px));max-height:calc(100dvh - 32px);margin:auto;border:1px solid var(--frpc-line);border-radius:12px;padding:0;background:Canvas;color:CanvasText;font:inherit;box-shadow:0 18px 70px #0004;overflow:auto}.frpc-picker::backdrop{background:#0006}.frpc-picker *{box-sizing:border-box}.frpc-picker-body{display:grid;gap:16px;min-width:0;padding:24px}.frpc-picker h2{font-size:18px;line-height:26px;margin:0;font-weight:600}.frpc-picker p{margin:0}.frpc-picker .frpc-button{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:9px 13px;border:1px solid var(--frpc-line);border-radius:6px;background:transparent;color:inherit;font:inherit;font-size:13px;line-height:22px;cursor:pointer}.frpc-picker .frpc-button-primary{background:var(--frpc-accent);border-color:var(--frpc-accent);color:#fff}.frpc-picker .frpc-button:disabled{opacity:.5;cursor:default}.frpc-picker .frpc-control{width:100%;min-width:0;height:42px;border:1px solid var(--frpc-line);border-radius:6px;background:transparent;color:inherit;font:inherit;font-size:14px;padding:9px 11px}.frpc-picker .frpc-label{font-size:13px;line-height:20px;font-weight:500}.frpc-picker .frpc-control:focus-visible,.frpc-picker button:focus-visible{outline:2px solid var(--frpc-accent);outline-offset:2px}.frpc-picker .frpc-head{display:flex;align-items:center;justify-content:space-between;gap:12px}.frpc-picker .frpc-help{font-size:12px;line-height:1.65;color:var(--frpc-muted)}.frpc-picker-nav{display:flex;gap:12px;align-items:center;min-width:0}.frpc-picker-nav .frpc-button{flex:none}.frpc-picker-path{font-size:12px;line-height:1.65;overflow-wrap:anywhere;min-width:0}.frpc-picker-filter{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}.frpc-picker-jump{grid-template-columns:auto minmax(0,1fr) auto}.frpc-file-list{list-style:none;margin:0;padding:0;border-block:1px solid var(--frpc-line);max-height:min(34dvh,320px);min-height:88px;overflow:auto}.frpc-file-list li{margin:0;padding:0}.frpc-file-row{width:100%;display:flex;align-items:center;gap:12px;text-align:left;min-height:44px;border:0;border-bottom:1px solid color-mix(in srgb,currentColor 8%,transparent);background:transparent;color:inherit;font:inherit;font-size:13px;padding:10px 12px;cursor:pointer}.frpc-file-row:hover{background:color-mix(in srgb,currentColor 6%,transparent)}.frpc-file-row[aria-pressed=true]{background:color-mix(in srgb,#2563eb 14%,transparent);box-shadow:inset 3px 0 #2563eb}.frpc-file-name{flex:1;min-width:0;overflow-wrap:anywhere}.frpc-file-kind{flex:none;font-size:12px;color:var(--frpc-muted)}.frpc-picker-empty{padding:20px 12px;font-size:13px;line-height:1.7}.frpc-picker-selection{display:grid;gap:6px;min-width:0}.frpc-picker-footer{display:flex;justify-content:flex-end;gap:8px;border-top:1px solid var(--frpc-line);padding-top:16px}.frpc-picker .frpc-error{color:var(--frpc-error);font-size:12px;line-height:1.6}
 @media(max-width:480px){.frpc-picker-body{padding:16px;gap:12px}.frpc-host-trigger{max-width:120px;white-space:normal}.frpc-picker-footer .frpc-button{flex:1}}
@@ -159,9 +160,31 @@ window.__ModuleLoader__.load({
         open ? h(HostFileDialog, { t, append: target.append, onClose: () => setTarget(null) }) : null)
     }
 
+    async function writeSettings(form, ops, revision, signal, pause = ms => new Promise(resolve => setTimeout(resolve, ms))) {
+      const equal = (left, right) => JSON.stringify(left) === JSON.stringify(right)
+      const matches = snapshot => snapshot.status === 'ready' && ops.every(op => op.path[0] !== 'token' && equal(snapshot.value?.[op.path[0]], op.value))
+      const before = form.getSnapshot()
+      const changes = ops.filter(op => op.path[0] === 'token' || !equal(before.value?.[op.path[0]], op.value))
+      if (!changes.length) return 'saved'
+      let rejected = false
+      try { if (await form.mutate(changes, revision) === true) return 'saved'; rejected = true }
+      catch (_) { /* 隧道应用新配置可能中断回包；通过恢复后的宿主快照核对，不自动重放写入。 */ }
+      for (let attempt = 0; attempt <= 40; attempt++) {
+        if (signal?.aborted) return 'cancelled'
+        const snapshot = form.getSnapshot()
+        // secret 不回显，无法通过读取快照证明密钥写入；只有成功回包才能确认它。
+        if (matches(snapshot)) return 'saved'
+        if (rejected && snapshot.status === 'ready' && snapshot.revision !== revision) return 'conflict'
+        if (attempt < 40) await pause(200)
+      }
+      return 'unconfirmed'
+    }
+    function sameSettings(left, right) { return JSON.stringify(left) === JSON.stringify(right) }
+    function canRebaseSettings(state, baseline, draft, clearToken) { return state.status === 'ready' && !draft.token && !clearToken && sameSettings(state.value, baseline) }
     function errorsFor(draft) {
       const errors = {}
       if ((draft.allowedDirectories || []).length > 20) errors.allowedDirectories = 'rootsTooMany'
+      else if (!draft.allowAllDirectories && (draft.allowedDirectories || []).some(path => !/^(?:[a-z]:[\\/]|\/|\\\\[^\\]+\\[^\\]+)/i.test(path) || /[\u0000-\u001f\u007f]/.test(path))) errors.allowedDirectories = 'invalidRoot'
       const integer = (key, min, max, message) => { if (!Number.isInteger(draft[key]) || draft[key] < min || draft[key] > max) errors[key] = message }
       integer('serverPort', 1, 65535, 'invalidPort'); integer('remotePort', 0, 65535, 'invalidPort')
       integer('restartDelayMs', 500, 60000, 'invalidDelay'); integer('maxRestarts', 0, 20, 'invalidRestarts')
@@ -185,11 +208,16 @@ window.__ModuleLoader__.load({
       const [notice, setNotice] = React.useState(''), [error, setError] = React.useState(''), [errors, setErrors] = React.useState({})
       const [saving, setSaving] = React.useState(false), [clearToken, setClearToken] = React.useState(false)
       const [rootsText, setRootsText] = React.useState('')
+      const baseline = React.useRef()
       const [status, setStatus] = React.useState(null), [statusError, setStatusError] = React.useState(false), [action, setAction] = React.useState(null)
       const actionController = React.useRef()
+      const saveController = React.useRef()
       React.useEffect(() => {
-        if (state.status === 'ready' && !draft) { setDraft({ ...state.value, allowedDirectories: state.value.allowedDirectories || [], autoDownload: state.value.autoDownload ?? true, allowAllDirectories: state.value.allowAllDirectories ?? false, token: '' }); setRootsText((state.value.allowedDirectories || []).join('\n')); setRevision(state.revision) }
-      }, [state, draft])
+        if (state.status !== 'ready') return
+        if (!draft) { baseline.current = state.value; setDraft({ ...state.value, allowedDirectories: state.value.allowedDirectories || [], autoDownload: state.value.autoDownload ?? true, allowAllDirectories: state.value.allowAllDirectories ?? false, token: '' }); setRootsText((state.value.allowedDirectories || []).join('\n')); setRevision(state.revision) }
+        // 重新挂载命名空间会增加 revision；内容未变且没有待写密钥时可安全同步。
+        else if (canRebaseSettings(state, baseline.current, draft, clearToken)) setRevision(state.revision)
+      }, [state, draft, clearToken])
       React.useEffect(() => {
         const controller = new AbortController(); let timer
         const poll = async () => {
@@ -202,7 +230,7 @@ window.__ModuleLoader__.load({
           if (!controller.signal.aborted) timer = setTimeout(poll, 1500)
         }
         void poll()
-        return () => { controller.abort(); clearTimeout(timer); actionController.current?.abort() }
+        return () => { controller.abort(); clearTimeout(timer); actionController.current?.abort(); saveController.current?.abort() }
       }, [])
       if (!draft) return h('p', { role: 'status' }, t(state.status === 'unavailable' ? 'unavailable' : 'loading'))
       const runtime = status?.runtime || { state: 'unchecked' }
@@ -232,10 +260,13 @@ window.__ModuleLoader__.load({
         setSaving(true); setError(''); setNotice('')
         const ops = Object.entries(draft).filter(([key]) => key !== 'token').map(([key, value]) => ({ op: 'set', path: [key], value }))
         if (clearToken || draft.token) ops.push({ op: 'set', path: ['token'], value: clearToken ? '' : draft.token })
+        saveController.current = new AbortController()
         try {
-          if (!await form.mutate(ops, revision)) throw new Error('rejected')
-          setDraft(null); setClearToken(false); setNotice(t('saved'))
-        } catch (_) { setError(t('failure')) }
+          const result = await writeSettings(form, ops, revision, saveController.current.signal)
+          if (result === 'cancelled' || saveController.current.signal.aborted) return
+          if (result === 'saved') { setRevision(form.getSnapshot().revision); setDraft(null); setClearToken(false); setNotice(t('saved')) }
+          else setError(t(result === 'conflict' ? 'conflict' : 'failure'))
+        } catch (_) { if (!saveController.current.signal.aborted) setError(t('failure')) }
         finally { setSaving(false) }
       }
       const progress = runtime.total ? Math.min(100, Math.floor(runtime.received / runtime.total * 100)) : undefined
@@ -258,7 +289,7 @@ window.__ModuleLoader__.load({
         h('details', { className: 'frpc-details' }, h('summary', null, t('advanced')), h('div', { className: 'frpc-details-content' }, h('div', { className: 'frpc-grid' }, field('trustedCaFile'), field('tlsServerName')), check('allowInsecureHttp'), h('div', { className: 'frpc-grid' }, field('restartDelayMs', 'number'), field('maxRestarts', 'number')))),
         h('section', { className: 'frpc-section', 'aria-label': t('hostFilesSection') }, h('h3', null, t('hostFilesSection')), h('div', { className: 'frpc-root-field' }, h('label', { className: 'frpc-label', htmlFor: id + 'browseScope' }, t('browseScope')), h('select', { id: id + 'browseScope', className: 'frpc-control', value: draft.allowAllDirectories ? 'all' : 'selected', disabled: saving, onChange: event => change('allowAllDirectories', event.target.value === 'all') }, h('option', { value: 'selected' }, t('selectedDirectories')), h('option', { value: 'all' }, t('allDirectories')))), draft.allowAllDirectories ? h('p', { className: 'frpc-help' }, t('allDirectoriesHint')) : h('div', { className: 'frpc-root-field' }, h('label', { className: 'frpc-label', htmlFor: id + 'allowedDirectories' }, t('allowedDirectories')), h('textarea', { id: id + 'allowedDirectories', className: 'frpc-control', value: rootsText, disabled: saving, spellCheck: false, 'aria-describedby': id + 'roots-help', onChange: event => { const value = event.target.value; setRootsText(value); change('allowedDirectories', value.split(/\r?\n/).map(line => line.trim()).filter(Boolean)) } }), h('p', { id: id + 'roots-help', className: errors.allowedDirectories ? 'frpc-error' : 'frpc-help' }, t(errors.allowedDirectories || 'rootsHint')))),
         h('footer', { className: 'frpc-footer' }, h('div', { className: 'frpc-actions' }, h('button', { className: 'frpc-button frpc-button-primary', type: 'submit', disabled: saving || busy || !state.writable }, t(saving ? 'saving' : 'save'))),
-          error ? h('p', { className: 'frpc-error', role: 'alert' }, error) : null, notice ? h('p', { className: 'frpc-notice', role: 'status' }, notice) : null,
+          error ? h('p', { className: 'frpc-error', role: 'alert' }, error) : null, error ? button(t('reloadConfig'), () => { if (window.confirm(t('discardDraft'))) { setDraft(null); setError(''); setNotice(''); setClearToken(false) } }, saving || state.status !== 'ready') : null, notice ? h('p', { className: 'frpc-notice', role: 'status' }, notice) : null,
           statusError ? h('p', { className: 'frpc-help', role: 'status' }, t('statusFailure')) : null, status?.message ? h('p', { className: 'frpc-connection-message' }, status.message) : null,
           status?.accessUrl ? h('div', { className: 'frpc-actions' }, h('a', { className: 'frpc-button', href: status.accessUrl, target: '_blank', rel: 'noreferrer' }, t('open')), button(t('copy'), async () => { try { await navigator.clipboard.writeText(status.accessUrl); setNotice(t('copied')) } catch (_) { setError(t('copyFailure')) } })) : null)))
     }

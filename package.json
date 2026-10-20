@@ -1,6 +1,6 @@
 {
   "name": "dsh-frpc-remote",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "DeepSeek Harness 0.2.1-rc.2 remote access settings and managed frpc tunnel",
   "type": "module",
   "license": "MIT",

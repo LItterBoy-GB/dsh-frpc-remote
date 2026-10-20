@@ -7,7 +7,8 @@ export const name = 'frpc-remote'
 
 export function apply(ctx, reference) {
   const config = reference.get()
-  const original = JSON.stringify(config)
+  const networkConfig = value => JSON.stringify(Object.fromEntries(Object.entries(value).filter(([key]) => !['allowedDirectories', 'allowAllDirectories'].includes(key))))
+  const original = networkConfig(config)
   ctx.provide('frpcRemoteAccess', { authorities: publicAuthorities(config) })
   ctx.inject(['settings'], (settings) => {
     settings.effect(() => settings.settings.configure({ auto: false }, ctx.fiber), 'frpc: dedicated settings page')
@@ -15,18 +16,29 @@ export function apply(ctx, reference) {
 
   // 配置表单更新 volatile 引用后，重建提供方，让依赖它的 Connection
   // 通过正常注入生命周期刷新可信域名；不修改 Connection 的内部字段。
-  let restarting = false
+  let restarting = false, restartTimer
+  ctx.effect(() => () => clearTimeout(restartTimer), 'frpc: delayed configuration apply')
   ctx.on('app-boot/config-reload', () => {
-    if (restarting || JSON.stringify(reference.get()) === original) return
-    restarting = true
-    void ctx.fiber.restart().catch((error) => ctx.logger.error(error))
+    if (restarting) return
+    clearTimeout(restartTimer)
+    if (networkConfig(reference.get()) === original) return
+    // 先让原生 settings RPC 返回保存结果，再断开承载该请求的 frpc 隧道。
+    restartTimer = setTimeout(() => {
+      restarting = true
+      void ctx.fiber.restart().catch((error) => ctx.logger.error(error))
+    }, 1000)
   })
 
   ctx.inject(['webServer', 'connection'], (host) => {
     const carrier = host.webServer
     if (!['127.0.0.1', '::1'].includes(carrier.host)) throw new Error('frpc 插件要求 dsh Web 服务只监听回环地址')
     const runtime = new FrpcRuntime({ home: host.get('profileContext')?.home })
-    const files = new HostFiles(config.allowedDirectories, config.allowAllDirectories)
+    let files, filesKey
+    const currentFiles = () => {
+      const current = reference.get(), key = JSON.stringify([current.allowedDirectories, current.allowAllDirectories])
+      if (!files || key !== filesKey) { files = new HostFiles(current.allowedDirectories, current.allowAllDirectories); filesKey = key }
+      return files
+    }
     for (const action of ['roots', 'list', 'select']) {
       host.effect(() => carrier.register({ kind: 'exact', path: `/frpc-remote/files/${action}`, async handler(req, res) {
         res.setHeader('cache-control', 'no-store')
@@ -40,7 +52,9 @@ export function apply(ctx, reference) {
         res.once('close', cancel)
         const signal = AbortSignal.any([controller.signal, AbortSignal.timeout(15000)])
         try {
-          const result = action === 'roots' ? { roots: await files.rootsSnapshot(), all: files.allowAll } : await files[action](await readJson(req), signal)
+          const body = action === 'roots' ? undefined : await readJson(req)
+          const files = currentFiles()
+          const result = action === 'roots' ? { roots: await files.rootsSnapshot(), all: files.allowAll } : await files[action](body, signal)
           if (!signal.aborted) res.end(JSON.stringify(result))
           else if (!res.destroyed) { res.writeHead(408); res.end(JSON.stringify({ error: '文件浏览已取消或超时' })) }
         } catch (error) {

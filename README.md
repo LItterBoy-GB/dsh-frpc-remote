@@ -11,19 +11,19 @@
 从 GitHub 安装固定版本到现有桌面 profile：
 
 ```powershell
-dsh plugin --profile desktop add github:LItterBoy-GB/dsh-frpc-remote#v0.3.0
+dsh plugin --profile desktop add github:LItterBoy-GB/dsh-frpc-remote#v0.3.1
 ```
 
 源码直接运行，不需要安装脚本或构建。也可以在源码目录运行 `npm pack --ignore-scripts`，再安装生成的本地包：
 
 ```powershell
-dsh plugin --profile desktop add .\dsh-frpc-remote-0.3.0.tgz
+dsh plugin --profile desktop add .\dsh-frpc-remote-0.3.1.tgz
 ```
 
 如果 `dsh` 没有加入 PATH，使用桌面端自带的命令：
 
 ```powershell
-& "$env:LOCALAPPDATA\Programs\DeepSeek Harness\resources\runtime\cli\bin\dsh.cmd" plugin --profile desktop add .\dsh-frpc-remote-0.3.0.tgz
+& "$env:LOCALAPPDATA\Programs\DeepSeek Harness\resources\runtime\cli\bin\dsh.cmd" plugin --profile desktop add .\dsh-frpc-remote-0.3.1.tgz
 ```
 
 重新打开 dsh 后进入 **设置 → 远程访问**。默认关闭，没有服务器配置也能打开设置页。也可以将包安装到使用 `dsh-base`、`dsh-web-app` 的其他 Web profile；不要安装到 headless/SDK profile。
@@ -38,9 +38,11 @@ dsh plugin --profile desktop add .\dsh-frpc-remote-0.3.0.tgz
 4. 勾选启用并点击「保存并应用」。配置落在 dsh 原生 profile 中，无需手工维护 frpc.toml。
 5. 状态显示「代理已连接」后，点击「打开远程入口」或「复制访问链接」。链接使用 dsh 自带的当前进程访问令牌；第一次打开后，由 dsh 换成浏览器认证 cookie。
 
-修改配置时 Connection 会短暂重连。关闭开关会结束本插件持有的 frpc 子进程；卸载、退出和配置更新也会清理子进程及临时文件。不会结束其他已有 frpc 进程。
+修改网络配置时 Connection 会短暂重连，插件先返回保存结果再应用隧道重连。仅修改主机文件浏览范围直接热更新，不重启隧道；原样重复保存不重复写入。关闭开关会结束本插件持有的 frpc 子进程；卸载、退出和网络配置更新也会清理子进程及临时文件。不会结束其他已有 frpc 进程。
 
 Token 输入框不回显原值，空白保存保留原 Token，勾选「清除已保存的 Token」才清除。密钥以 dsh 原生 secret 配置字段保存到本机 profile，不使用系统密钥库；生成的临时 TOML 只包含环境变量模板，Token 通过子进程环境传入。不要分享包含凭据的 profile 文件。
+
+保存遇到连接中断时，页面会核对恢复后的宿主配置，不会直接把断线当成修订冲突或自动重复写入。无法确认时保留草稿并提示核对；密钥不会回显，所以密钥写入只有成功回包才能确认。真正冲突时可点击「载入最新配置」，确认放弃草稿后重新编辑。
 
 ### 程序检测与自动下载
 
@@ -141,7 +143,7 @@ npm pack
 
 包文件包含运行源码，源码 ZIP 另含测试与锁文件。`test/fixture-frpc.js` 是测试用 Node 子进程，不是 frpc 实现。
 
-本次验证：31 项单元/子进程测试；已安装 0.2.1-rc.2 的独立 profile 中打开设置、检测与自动安装、配置多个目录、选择主机文件及追加草稿；该版本原生 WebServer/Connection 的认证、文件目录边界、请求边界和密钥脱敏；官方 frpc/frps 0.71.1 在 **127.0.0.1** 的真实转发、SSE、WebSocket、热关闭和端口释放。隧道回归使用本机隔离服务。
+本次验证：37 项单元/子进程测试；已安装 0.2.1-rc.2 的独立 profile 中打开设置、检测与自动安装、配置多个目录、选择主机文件及追加草稿；该版本原生 WebServer/Connection 的认证、文件目录边界、请求边界和密钥脱敏；官方 frpc/frps 0.71.1 在 **127.0.0.1** 的真实转发、SSE、WebSocket、热关闭和端口释放。隧道回归使用本机隔离服务。
 
 ## 卸载
 
