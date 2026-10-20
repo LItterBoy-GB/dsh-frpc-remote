@@ -1,0 +1,11 @@
+# Install after dsh-web-app. The desktop profile uses this same Web host.
+- insert:
+    - id: frpc-remote
+      name: dsh-frpc-remote
+
+# Keep invocation authorities. The provider is recreated when its settings change,
+# so Connection receives the new authority through ordinary Cordis injection.
+- id: connection
+  inject: [webStartup, frpcRemoteAccess]
+  config:
+    trustedHosts: !!js '[...ctx.webStartup.trustedHosts, ...ctx.frpcRemoteAccess.authorities]'
