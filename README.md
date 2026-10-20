@@ -11,19 +11,19 @@
 从 GitHub 安装固定版本到现有桌面 profile：
 
 ```powershell
-dsh plugin --profile desktop add github:LItterBoy-GB/dsh-frpc-remote#v0.2.0
+dsh plugin --profile desktop add github:LItterBoy-GB/dsh-frpc-remote#v0.3.0
 ```
 
 源码直接运行，不需要安装脚本或构建。也可以在源码目录运行 `npm pack --ignore-scripts`，再安装生成的本地包：
 
 ```powershell
-dsh plugin --profile desktop add .\dsh-frpc-remote-0.2.0.tgz
+dsh plugin --profile desktop add .\dsh-frpc-remote-0.3.0.tgz
 ```
 
 如果 `dsh` 没有加入 PATH，使用桌面端自带的命令：
 
 ```powershell
-& "$env:LOCALAPPDATA\Programs\DeepSeek Harness\resources\runtime\cli\bin\dsh.cmd" plugin --profile desktop add .\dsh-frpc-remote-0.2.0.tgz
+& "$env:LOCALAPPDATA\Programs\DeepSeek Harness\resources\runtime\cli\bin\dsh.cmd" plugin --profile desktop add .\dsh-frpc-remote-0.3.0.tgz
 ```
 
 重新打开 dsh 后进入 **设置 → 远程访问**。默认关闭，没有服务器配置也能打开设置页。也可以将包安装到使用 `dsh-base`、`dsh-web-app` 的其他 Web profile；不要安装到 headless/SDK profile。
@@ -50,6 +50,32 @@ Token 输入框不回显原值，空白保存保留原 Token，勾选「清除�
 - 支持 Windows、Linux、macOS 的 x64 / ARM64 官方包。缓存位置为 `<DSH_HOME>/tools/frp-0.71.1/<系统>-<架构>/`，默认 DSH_HOME 为用户目录下的 `.dsh`。
 - 页面显示下载进度、检测结果、实际路径和版本。网络失败或校验失败可重试；也可手动下载官方客户端并填写完整路径。已有程序不会被自动覆盖。
 - 自动安装固定使用 [frp v0.71.1 官方 Release](https://github.com/fatedier/frp/releases/tag/v0.71.1)，不获取可变的 latest。仅 Windows x64 完成真实下载与执行验证；其他平台已验证包选择和解压逻辑，尚未做对应系统的运行验证。
+
+## 选择主机文件
+
+对话输入框旁的「选择主机文件」可以浏览**运行 dsh 的电脑**，选择工作区以外的文件，并将完整路径追加到当前草稿。它不切换工作区，不自动发送消息，也不上传或读取所选文件的内容；随后智能体能否读取或修改该文件，仍取决于会话权限与系统权限。
+
+在 **设置 → 远程访问 → 主机文件 → 浏览范围** 中选择：
+
+- **指定多个目录**：每行填写一个完整目录，最多 20 项；文件面板可切换这些目录。默认列表为空，不能浏览任何目录。
+- **所有目录**：浏览当前 dsh 系统账号有权限访问的目录。Windows 可切换可用磁盘；也可输入完整目录路径跳转，包括可访问的 UNC 共享。POSIX 从 `/` 开始。
+
+点击「保存并应用」后，在当前会话打开文件面板。点击目录进入，使用「上一级」返回或输入完整目录跳转；筛选只针对当前目录。点击文件，再点击「插入完整路径」。路径以代码文本追加，保留原草稿、附件和引用芯片。关闭面板或切换会话不会把选择插入另一个会话。
+
+![主机文件选择面板](docs/host-files.png)
+
+此功能沿用 dsh 登录认证，不提供匿名浏览接口。指定目录模式会检查真实路径，拒绝 `..` 越界、前缀相似目录及指向目录外的链接；列表不显示符号链接、Windows 目录联接和无法读取元数据的子项。不会增加系统账号本身没有的权限。一次最多显示 500 项、扫描 5000 项，列表截断时会提示进一步筛选；不是整盘递归搜索。
+
+配置字段示例（路径仅作示例）：
+
+```yaml
+allowAllDirectories: false
+allowedDirectories:
+  - 'H:\项目'
+  - 'H:\资料'
+```
+
+文件选择与 frpc 开关独立：在本机 dsh 中也可使用；远程访问关闭时，文件面板不会主动建立远程连接。
 
 ## HTTPS 入口示例
 
@@ -115,7 +141,7 @@ npm pack
 
 包文件包含运行源码，源码 ZIP 另含测试与锁文件。`test/fixture-frpc.js` 是测试用 Node 子进程，不是 frpc 实现。
 
-本次验证：20 项单元/子进程测试；已安装 0.2.1-rc.2 的独立 profile 中打开设置、检测与自动安装；该版本原生 WebServer/Connection 的认证、请求边界和密钥脱敏；官方 frpc/frps 0.71.1 在 **127.0.0.1** 的真实转发、SSE、WebSocket、热关闭和端口释放。隧道回归使用本机隔离服务。
+本次验证：31 项单元/子进程测试；已安装 0.2.1-rc.2 的独立 profile 中打开设置、检测与自动安装、配置多个目录、选择主机文件及追加草稿；该版本原生 WebServer/Connection 的认证、文件目录边界、请求边界和密钥脱敏；官方 frpc/frps 0.71.1 在 **127.0.0.1** 的真实转发、SSE、WebSocket、热关闭和端口释放。隧道回归使用本机隔离服务。
 
 ## 卸载
 

@@ -1,9 +1,12 @@
 import Schema from '@deepseek-ai/schemastery'
+import { validateRoots } from './host-files.js'
 
 export const fields = Schema.object({
   enabled: Schema.boolean().default(false).description('启用远程访问'),
   frpcPath: Schema.string().default('auto').description('frpc 路径；auto 或留空自动检测'),
   autoDownload: Schema.boolean().default(true).description('找不到 frpc 时自动下载并校验官方版本'),
+  allowedDirectories: Schema.array(Schema.string()).default([]).description('允许在对话中浏览的主机目录；空列表禁止浏览'),
+  allowAllDirectories: Schema.boolean().default(false).description('允许浏览主机所有目录；仍受系统权限限制'),
   serverAddr: Schema.string().default('').description('frps 服务器地址'),
   serverPort: Schema.natural().min(1).max(65535).default(7000).description('frps 端口'),
   token: Schema.string().role('secret').default('').description('frps Token；留空保留已存值'),
@@ -19,6 +22,7 @@ export const fields = Schema.object({
 })
 
 export function validate(config) {
+  validateRoots(config.allowedDirectories ?? [])
   if (!config.enabled) return config
   for (const key of ['serverAddr', 'proxyName', 'publicUrl']) {
     if (!config[key]?.trim()) throw new Error(`${key} 不能为空`)

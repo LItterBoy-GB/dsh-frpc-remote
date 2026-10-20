@@ -1,6 +1,7 @@
 import { Config, publicAuthorities } from './config.js'
 import { Tunnel } from './tunnel.js'
 import { FrpcRuntime } from './frpc-runtime.js'
+import { HostFiles } from './host-files.js'
 export { Config }
 export const name = 'frpc-remote'
 
@@ -25,6 +26,28 @@ export function apply(ctx, reference) {
     const carrier = host.webServer
     if (!['127.0.0.1', '::1'].includes(carrier.host)) throw new Error('frpc 插件要求 dsh Web 服务只监听回环地址')
     const runtime = new FrpcRuntime({ home: host.get('profileContext')?.home })
+    const files = new HostFiles(config.allowedDirectories, config.allowAllDirectories)
+    for (const action of ['roots', 'list', 'select']) {
+      host.effect(() => carrier.register({ kind: 'exact', path: `/frpc-remote/files/${action}`, async handler(req, res) {
+        res.setHeader('cache-control', 'no-store')
+        const rejection = host.connection.requestRejection(req)
+        if (rejection !== undefined) { res.writeHead(rejection); res.end(); return }
+        const method = action === 'roots' ? 'GET' : 'POST'
+        if (req.method !== method) { res.writeHead(405, { Allow: method }); res.end(); return }
+        res.setHeader('content-type', 'application/json; charset=utf-8')
+        const controller = new AbortController()
+        const cancel = () => controller.abort()
+        res.once('close', cancel)
+        const signal = AbortSignal.any([controller.signal, AbortSignal.timeout(15000)])
+        try {
+          const result = action === 'roots' ? { roots: await files.rootsSnapshot(), all: files.allowAll } : await files[action](await readJson(req), signal)
+          if (!signal.aborted) res.end(JSON.stringify(result))
+          else if (!res.destroyed) { res.writeHead(408); res.end(JSON.stringify({ error: '文件浏览已取消或超时' })) }
+        } catch (error) {
+          if (!res.destroyed) { res.writeHead(error.status || 400); res.end(JSON.stringify({ error: error.message })) }
+        } finally { res.off('close', cancel) }
+      } }), `frpc: authenticated files ${action}`)
+    }
     host.effect(() => () => runtime.dispose(), 'frpc: cancel runtime operations')
     const tunnel = new Tunnel(config, { host: carrier.host, port: carrier.port, protocol: carrier.protocol }, undefined, undefined,
       () => runtime.ensure(config.frpcPath, config.autoDownload))

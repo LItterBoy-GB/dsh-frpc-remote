@@ -58,8 +58,110 @@ window.__ModuleLoader__.load({
 @container frpc (min-width:540px){.frpc-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
 @container frpc (max-width:360px){.frpc-enable{align-items:flex-start;flex-direction:column;gap:0}.frpc-enable .frpc-help{text-align:left}.frpc-head{align-items:flex-start;flex-direction:column;gap:2px}.frpc-form .frpc-button{white-space:normal}}
 `
+    Object.assign(zh, {
+      hostFiles: '选择主机文件', allowedDirectories: '允许浏览的主机目录', rootsHint: '每行一个完整目录，最多 20 项。留空禁止浏览。选中文件只插入路径，不切换工作区或上传内容。', rootsTooMany: '允许目录最多为 20 项。', root: '允许目录', up: '上一级', filter: '筛选当前目录', filterAction: '筛选', file: '文件', directory: '目录', close: '关闭', cancel: '取消', insertPath: '插入完整路径', selectedFile: '已选文件', noRoots: '尚未配置允许目录。请在「设置 → 远程访问 → 主机文件」中添加目录并保存。', hostFilesSection: '主机文件', fileEmpty: '当前目录没有匹配的文件或目录。', fileLoading: '正在读取目录…', fileFailure: '无法读取主机目录，请检查连接与目录权限。', fileTruncated: '列表仅显示部分结果，请筛选文件名或进入更具体的目录。', fileNote: '浏览运行 dsh 的电脑；确认后将完整路径追加到当前草稿。', fileInsertFailure: '当前对话暂时无法插入路径，请保留选择并重试。', noSelected: '选择一个文件后再插入。', fileSkipped: '符号链接、目录联接和无法访问的文件不会显示。',
+    })
+    Object.assign(en, {
+      hostFiles: 'Choose host file', allowedDirectories: 'Allowed host directories', rootsHint: 'One absolute directory per line, up to 20. Empty disables browsing. Selection inserts a path without changing workspace or uploading content.', rootsTooMany: 'Allow up to 20 directories.', root: 'Allowed directory', up: 'Parent', filter: 'Filter this directory', filterAction: 'Filter', file: 'File', directory: 'Directory', close: 'Close', cancel: 'Cancel', insertPath: 'Insert full path', selectedFile: 'Selected file', noRoots: 'No allowed directories. Add directories under Settings → Remote access → Host files and save.', hostFilesSection: 'Host files', fileEmpty: 'No matching files or directories.', fileLoading: 'Loading directory…', fileFailure: 'Cannot browse host files. Check the connection and directory permissions.', fileTruncated: 'Only part of the directory is shown. Filter by name or open a more specific directory.', fileNote: 'Browse the computer running dsh. Insert appends the full path to this draft.', fileInsertFailure: 'Cannot insert into this conversation right now. Keep the selection and retry.', noSelected: 'Choose a file to insert.', fileSkipped: 'Symbolic links, directory junctions and inaccessible entries are hidden.',
+    })
+    Object.assign(zh, { browseScope: '浏览范围', allDirectories: '所有目录', selectedDirectories: '指定多个目录', allDirectoriesHint: '可浏览运行 dsh 的系统账号有权限访问的所有目录；支持磁盘切换和完整路径跳转。', jumpDirectory: '跳转到目录', jump: '跳转', customDirectory: '自定义路径' })
+    Object.assign(en, { browseScope: 'Browse scope', allDirectories: 'All directories', selectedDirectories: 'Multiple specified directories', allDirectoriesHint: 'Browse directories accessible to the account running dsh, with drive selection and absolute-path navigation.', jumpDirectory: 'Go to directory', jump: 'Go', customDirectory: 'Custom path' })
+    const filesCss = `
+.frpc-form textarea.frpc-control{height:112px;resize:vertical;min-height:84px;line-height:22px}.frpc-root-field{display:grid;gap:7px}
+.frpc-host-trigger{display:inline-flex;align-items:center;justify-content:center;min-height:32px;padding:4px 9px;border:1px solid color-mix(in srgb,currentColor 18%,transparent);border-radius:6px;background:transparent;color:inherit;font:inherit;font-size:12px;line-height:20px;cursor:pointer;white-space:nowrap}.frpc-host-trigger:disabled{opacity:.5;cursor:default}.frpc-host-trigger:focus-visible{outline:2px solid #2563eb;outline-offset:3px}
+.frpc-picker{--frpc-line:color-mix(in srgb,currentColor 18%,transparent);--frpc-muted:color-mix(in srgb,currentColor 68%,transparent);--frpc-accent:#2563eb;--frpc-error:light-dark(#dc2626,#fca5a5);width:min(680px,calc(100vw - 32px));max-height:calc(100dvh - 32px);margin:auto;border:1px solid var(--frpc-line);border-radius:12px;padding:0;background:Canvas;color:CanvasText;font:inherit;box-shadow:0 18px 70px #0004;overflow:auto}.frpc-picker::backdrop{background:#0006}.frpc-picker *{box-sizing:border-box}.frpc-picker-body{display:grid;gap:16px;min-width:0;padding:24px}.frpc-picker h2{font-size:18px;line-height:26px;margin:0;font-weight:600}.frpc-picker p{margin:0}.frpc-picker .frpc-button{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:9px 13px;border:1px solid var(--frpc-line);border-radius:6px;background:transparent;color:inherit;font:inherit;font-size:13px;line-height:22px;cursor:pointer}.frpc-picker .frpc-button-primary{background:var(--frpc-accent);border-color:var(--frpc-accent);color:#fff}.frpc-picker .frpc-button:disabled{opacity:.5;cursor:default}.frpc-picker .frpc-control{width:100%;min-width:0;height:42px;border:1px solid var(--frpc-line);border-radius:6px;background:transparent;color:inherit;font:inherit;font-size:14px;padding:9px 11px}.frpc-picker .frpc-label{font-size:13px;line-height:20px;font-weight:500}.frpc-picker .frpc-control:focus-visible,.frpc-picker button:focus-visible{outline:2px solid var(--frpc-accent);outline-offset:2px}.frpc-picker .frpc-head{display:flex;align-items:center;justify-content:space-between;gap:12px}.frpc-picker .frpc-help{font-size:12px;line-height:1.65;color:var(--frpc-muted)}.frpc-picker-nav{display:flex;gap:12px;align-items:center;min-width:0}.frpc-picker-nav .frpc-button{flex:none}.frpc-picker-path{font-size:12px;line-height:1.65;overflow-wrap:anywhere;min-width:0}.frpc-picker-filter{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}.frpc-picker-jump{grid-template-columns:auto minmax(0,1fr) auto}.frpc-file-list{list-style:none;margin:0;padding:0;border-block:1px solid var(--frpc-line);max-height:min(34dvh,320px);min-height:88px;overflow:auto}.frpc-file-list li{margin:0;padding:0}.frpc-file-row{width:100%;display:flex;align-items:center;gap:12px;text-align:left;min-height:44px;border:0;border-bottom:1px solid color-mix(in srgb,currentColor 8%,transparent);background:transparent;color:inherit;font:inherit;font-size:13px;padding:10px 12px;cursor:pointer}.frpc-file-row:hover{background:color-mix(in srgb,currentColor 6%,transparent)}.frpc-file-row[aria-pressed=true]{background:color-mix(in srgb,#2563eb 14%,transparent);box-shadow:inset 3px 0 #2563eb}.frpc-file-name{flex:1;min-width:0;overflow-wrap:anywhere}.frpc-file-kind{flex:none;font-size:12px;color:var(--frpc-muted)}.frpc-picker-empty{padding:20px 12px;font-size:13px;line-height:1.7}.frpc-picker-selection{display:grid;gap:6px;min-width:0}.frpc-picker-footer{display:flex;justify-content:flex-end;gap:8px;border-top:1px solid var(--frpc-line);padding-top:16px}.frpc-picker .frpc-error{color:var(--frpc-error);font-size:12px;line-height:1.6}
+@media(max-width:480px){.frpc-picker-body{padding:16px;gap:12px}.frpc-host-trigger{max-width:120px;white-space:normal}.frpc-picker-footer .frpc-button{flex:1}}
+`
+    // 使用宿主公开的会话输入事件追加；不替换整份草稿，保留已有引用芯片。
+    function appendHostPath(actx, input, path) {
+      const state = input.state.getSnapshot()
+      if (!['plain', 'claimed'].includes(state.phase)) return false
+      const at = state.draft.length - state.occurrences.reduce((sum, item) => sum + item.length - 1, 0)
+      const mark = String.fromCharCode(96)
+      const runs = path.match(/`+/g) || []
+      const fence = mark.repeat(Math.max(0, ...runs.map(run => run.length)) + 1)
+      const text = (state.draft && !state.draft.endsWith('\n') ? '\n' : '') + fence + ' ' + path + ' ' + fence + '\n'
+      return actx.bail(actx, 'slash/input-insert-text', { text, span: { start: at, end: at, draftRev: state.draftRev } }) === true
+    }
+    function HostFileDialog({ t, onClose, append }) {
+      const id = React.useId(), dialog = React.useRef(), active = React.useRef(), lifetime = React.useRef(new AbortController())
+      const [roots, setRoots] = React.useState(null), [rootId, setRootId] = React.useState(0), [all, setAll] = React.useState(false), [directoryPath, setDirectoryPath] = React.useState('')
+      const [listing, setListing] = React.useState(null), [selected, setSelected] = React.useState(null), [search, setSearch] = React.useState('')
+      const [loading, setLoading] = React.useState(true), [inserting, setInserting] = React.useState(false), [error, setError] = React.useState('')
+      const request = async (action, body, controller) => {
+        const response = await fetch('./frpc-remote/files/' + action, { credentials: 'same-origin', cache: 'no-store', method: body ? 'POST' : 'GET', headers: body ? { 'content-type': 'application/json' } : undefined, body: body ? JSON.stringify(body) : undefined, signal: AbortSignal.any([controller.signal, lifetime.current.signal, AbortSignal.timeout(20000)]) })
+        let result
+        try { result = await response.json() } catch (_) { throw new Error(t('fileFailure')) }
+        if (!response.ok) throw new Error(result.error || t('fileFailure'))
+        return result
+      }
+      const load = async (root, path, query = '') => {
+        active.current?.abort(); const controller = new AbortController(); active.current = controller
+        setLoading(true); setError(''); setSelected(null); setListing(null)
+        try {
+          const result = await request('list', { root, path, search: query }, controller)
+          if (!controller.signal.aborted && !lifetime.current.signal.aborted) { setListing(result); setRootId(result.root); setDirectoryPath(result.path) }
+        } catch (failure) { if (!controller.signal.aborted && !lifetime.current.signal.aborted) setError(failure.message || t('fileFailure')) }
+        finally { if (!controller.signal.aborted && !lifetime.current.signal.aborted) setLoading(false) }
+      }
+      React.useEffect(() => {
+        const controller = new AbortController(); lifetime.current = controller
+        const element = dialog.current
+        element.showModal()
+        void request('roots', undefined, controller).then(result => {
+          if (controller.signal.aborted) return
+          setRoots(result.roots); setAll(result.all === true)
+          const first = result.roots.find(root => root.available)
+          if (first) { setRootId(first.id); void load(first.id, first.path) }
+          else { setLoading(false); if (result.roots.length) setError(result.roots[0].message) }
+        }).catch(failure => { if (!controller.signal.aborted) { setLoading(false); setError(failure.message || t('fileFailure')) } })
+        return () => { controller.abort(); active.current?.abort(); element.close() }
+      }, [])
+      const insert = async () => {
+        if (!selected || !listing) return
+        const controller = new AbortController(); active.current = controller
+        setInserting(true); setError('')
+        try {
+          const result = await request('select', { root: listing.root, path: selected }, controller)
+          if (lifetime.current.signal.aborted) return
+          if (!append(result.path)) throw new Error(t('fileInsertFailure'))
+          onClose()
+        } catch (failure) { if (!lifetime.current.signal.aborted) setError(failure.message || t('fileInsertFailure')) }
+        finally { if (!lifetime.current.signal.aborted) setInserting(false) }
+      }
+      const button = (label, onClick, disabled) => h('button', { type: 'button', className: 'frpc-button', onClick, disabled }, label)
+      return h('dialog', { ref: dialog, className: 'frpc-picker', 'aria-labelledby': id + '-title', 'aria-describedby': id + '-note', onCancel: event => { event.preventDefault(); onClose() } },
+        h('div', { className: 'frpc-picker-body' },
+          h('div', { className: 'frpc-head' }, h('h2', { id: id + '-title' }, t('hostFiles')), button(t('close'), onClose, false)),
+          h('p', { className: 'frpc-help', id: id + '-note' }, t('fileNote')),
+          roots?.length === 0 ? h('p', { className: 'frpc-picker-empty', role: 'status' }, t('noRoots')) : null,
+          roots?.length ? h('div', { className: 'frpc-root-field' }, h('label', { className: 'frpc-label', htmlFor: id + '-root' }, t('root')),
+            h('select', { id: id + '-root', className: 'frpc-control', value: rootId, disabled: inserting, onChange: event => { const root = roots.find(item => item.id === Number(event.target.value)); setRootId(root.id); setSearch(''); void load(root.id, root.path) } }, rootId === -1 ? h('option', { value: -1 }, t('customDirectory')) : null, roots.map(root => h('option', { key: root.id, value: root.id, disabled: !root.available }, root.path || root.configured)))) : null,
+          roots?.some(root => root.available) ? h('form', { className: 'frpc-root-field', onSubmit: event => { event.preventDefault(); void load(all ? -1 : rootId, directoryPath) } }, h('label', { className: 'frpc-label', htmlFor: id + '-path' }, t('jumpDirectory')), h('div', { className: 'frpc-picker-filter frpc-picker-jump' }, button(t('up'), () => { setSearch(''); void load(listing.root, listing.parent) }, !listing?.parent || loading || inserting), h('input', { id: id + '-path', className: 'frpc-control', value: directoryPath, disabled: inserting, onChange: event => setDirectoryPath(event.target.value) }), h('button', { type: 'submit', className: 'frpc-button', disabled: loading || inserting || !directoryPath }, t('jump')))) : null,
+          roots?.some(root => root.available) ? h('form', { className: 'frpc-root-field', onSubmit: event => { event.preventDefault(); if (listing) void load(listing.root, listing.path, search) } }, h('label', { className: 'frpc-label', htmlFor: id + '-search' }, t('filter')),
+            h('div', { className: 'frpc-picker-filter' }, h('input', { id: id + '-search', className: 'frpc-control', value: search, maxLength: 200, onChange: event => setSearch(event.target.value), disabled: inserting }), h('button', { className: 'frpc-button', type: 'submit', disabled: !listing || loading || inserting }, t('filterAction')))) : null,
+          loading ? h('p', { className: 'frpc-picker-empty', role: 'status' }, t('fileLoading')) : null,
+          listing ? h('ul', { className: 'frpc-file-list', 'aria-label': t('hostFiles') }, listing.entries.map(entry => h('li', { key: entry.path }, h('button', { type: 'button', className: 'frpc-file-row', disabled: inserting, 'aria-pressed': entry.type === 'file' ? selected === entry.path : undefined, onClick: () => { if (entry.type === 'directory') { setSearch(''); void load(listing.root, entry.path) } else setSelected(entry.path) } }, h('span', { className: 'frpc-file-name' }, entry.name), h('span', { className: 'frpc-file-kind' }, entry.type === 'directory' ? t('directory') : entry.size < 1024 ? entry.size + ' B' : entry.size < 1048576 ? (entry.size / 1024).toFixed(1) + ' KB' : (entry.size / 1048576).toFixed(1) + ' MB')))), !listing.entries.length ? h('li', { className: 'frpc-picker-empty' }, t('fileEmpty')) : null) : null,
+          listing?.truncated ? h('p', { className: 'frpc-help', role: 'status' }, t('fileTruncated')) : null,
+          listing ? h('p', { className: 'frpc-help' }, t('fileSkipped')) : null,
+          error ? h('p', { className: 'frpc-error', role: 'alert' }, error) : null,
+          listing ? h('div', { className: 'frpc-picker-selection' }, h('span', { className: 'frpc-label' }, t('selectedFile')), h('p', { className: 'frpc-picker-path', role: 'status' }, selected || t('noSelected'))) : null,
+          h('div', { className: 'frpc-picker-footer' }, button(t('cancel'), onClose, false), h('button', { type: 'button', className: 'frpc-button frpc-button-primary', disabled: !selected || loading || inserting, onClick: insert }, t('insertPath')))))
+    }
+    function HostFilesControl({ t, input, append }) {
+      const state = React.useSyncExternalStore(input.state.subscribe.bind(input.state), input.state.getSnapshot.bind(input.state))
+      // 把打开时的会话与回调一起固定；宿主复用控件实例时也不会落到新会话。
+      const [target, setTarget] = React.useState(null), wasOpen = React.useRef(false)
+      const open = target?.input === input
+      React.useEffect(() => { if (target && target.input !== input) setTarget(null) }, [input, target])
+      React.useEffect(() => { if (wasOpen.current && !open) input.focus(); wasOpen.current = open }, [open])
+      return h(React.Fragment, null, h('button', { type: 'button', className: 'frpc-host-trigger', disabled: !['plain', 'claimed'].includes(state.phase), onClick: () => setTarget({ input, append }) }, t('hostFiles')),
+        open ? h(HostFileDialog, { t, append: target.append, onClose: () => setTarget(null) }) : null)
+    }
+
     function errorsFor(draft) {
       const errors = {}
+      if ((draft.allowedDirectories || []).length > 20) errors.allowedDirectories = 'rootsTooMany'
       const integer = (key, min, max, message) => { if (!Number.isInteger(draft[key]) || draft[key] < min || draft[key] > max) errors[key] = message }
       integer('serverPort', 1, 65535, 'invalidPort'); integer('remotePort', 0, 65535, 'invalidPort')
       integer('restartDelayMs', 500, 60000, 'invalidDelay'); integer('maxRestarts', 0, 20, 'invalidRestarts')
@@ -82,10 +184,11 @@ window.__ModuleLoader__.load({
       const [draft, setDraft] = React.useState(null), [revision, setRevision] = React.useState()
       const [notice, setNotice] = React.useState(''), [error, setError] = React.useState(''), [errors, setErrors] = React.useState({})
       const [saving, setSaving] = React.useState(false), [clearToken, setClearToken] = React.useState(false)
+      const [rootsText, setRootsText] = React.useState('')
       const [status, setStatus] = React.useState(null), [statusError, setStatusError] = React.useState(false), [action, setAction] = React.useState(null)
       const actionController = React.useRef()
       React.useEffect(() => {
-        if (state.status === 'ready' && !draft) { setDraft({ ...state.value, autoDownload: state.value.autoDownload ?? true, token: '' }); setRevision(state.revision) }
+        if (state.status === 'ready' && !draft) { setDraft({ ...state.value, allowedDirectories: state.value.allowedDirectories || [], autoDownload: state.value.autoDownload ?? true, allowAllDirectories: state.value.allowAllDirectories ?? false, token: '' }); setRootsText((state.value.allowedDirectories || []).join('\n')); setRevision(state.revision) }
       }, [state, draft])
       React.useEffect(() => {
         const controller = new AbortController(); let timer
@@ -153,6 +256,7 @@ window.__ModuleLoader__.load({
         h('section', { className: 'frpc-section', 'aria-label': t('entry') }, h('h3', null, t('entry')), h('div', { className: 'frpc-grid' }, field('proxyName'), h('div', { className: 'frpc-field' }, h('label', { className: 'frpc-label', htmlFor: id + 'proxyType' }, t('proxyType')), h('select', { className: 'frpc-control', id: id + 'proxyType', value: draft.proxyType, disabled: saving, onChange: event => change('proxyType', event.target.value) }, h('option', { value: 'tcp' }, 'TCP'), h('option', { value: 'http' }, 'HTTP')))),
           h('p', { className: 'frpc-help' }, t('nameHint')), draft.proxyType === 'tcp' ? field('remotePort', 'number') : null, field('publicUrl', 'url', 'publicHint')),
         h('details', { className: 'frpc-details' }, h('summary', null, t('advanced')), h('div', { className: 'frpc-details-content' }, h('div', { className: 'frpc-grid' }, field('trustedCaFile'), field('tlsServerName')), check('allowInsecureHttp'), h('div', { className: 'frpc-grid' }, field('restartDelayMs', 'number'), field('maxRestarts', 'number')))),
+        h('section', { className: 'frpc-section', 'aria-label': t('hostFilesSection') }, h('h3', null, t('hostFilesSection')), h('div', { className: 'frpc-root-field' }, h('label', { className: 'frpc-label', htmlFor: id + 'browseScope' }, t('browseScope')), h('select', { id: id + 'browseScope', className: 'frpc-control', value: draft.allowAllDirectories ? 'all' : 'selected', disabled: saving, onChange: event => change('allowAllDirectories', event.target.value === 'all') }, h('option', { value: 'selected' }, t('selectedDirectories')), h('option', { value: 'all' }, t('allDirectories')))), draft.allowAllDirectories ? h('p', { className: 'frpc-help' }, t('allDirectoriesHint')) : h('div', { className: 'frpc-root-field' }, h('label', { className: 'frpc-label', htmlFor: id + 'allowedDirectories' }, t('allowedDirectories')), h('textarea', { id: id + 'allowedDirectories', className: 'frpc-control', value: rootsText, disabled: saving, spellCheck: false, 'aria-describedby': id + 'roots-help', onChange: event => { const value = event.target.value; setRootsText(value); change('allowedDirectories', value.split(/\r?\n/).map(line => line.trim()).filter(Boolean)) } }), h('p', { id: id + 'roots-help', className: errors.allowedDirectories ? 'frpc-error' : 'frpc-help' }, t(errors.allowedDirectories || 'rootsHint')))),
         h('footer', { className: 'frpc-footer' }, h('div', { className: 'frpc-actions' }, h('button', { className: 'frpc-button frpc-button-primary', type: 'submit', disabled: saving || busy || !state.writable }, t(saving ? 'saving' : 'save'))),
           error ? h('p', { className: 'frpc-error', role: 'alert' }, error) : null, notice ? h('p', { className: 'frpc-notice', role: 'status' }, notice) : null,
           statusError ? h('p', { className: 'frpc-help', role: 'status' }, t('statusFailure')) : null, status?.message ? h('p', { className: 'frpc-connection-message' }, status.message) : null,
@@ -162,8 +266,16 @@ window.__ModuleLoader__.load({
       inject: ['slots', 'locale', 'configForms'],
       apply(ctx) {
         ctx.effect(() => ctx.locale.register(NS, { zh, en }), 'frpc: locales')
-        ctx.effect(() => { const style = document.createElement('style'); style.textContent = css; style.dataset.plugin = 'dsh-frpc-remote'; document.head.append(style); return () => style.remove() }, 'frpc: styles')
+        ctx.effect(() => { const style = document.createElement('style'); style.textContent = css + filesCss; style.dataset.plugin = 'dsh-frpc-remote'; document.head.append(style); return () => style.remove() }, 'frpc: styles')
         const t = ctx.locale.bind(NS), form = ctx.configForms.get('frpc-remote')
+        ctx.inject(['sessions', 'conversation'], scope => {
+          scope.slots.inject('conversation.input.left', () => scope.slots.register({ name: 'conversation.input.left', id: 'frpc-host-files', order: 40, locale: NS, inject: sessionId => {
+            const actx = scope.sessions.scope(sessionId)
+            if (!actx) throw new Error('Host file picker requires an active conversation')
+            const input = scope.conversation.input.for(actx)
+            return { input, append: path => appendHostPath(actx, input, path) }
+          } }, HostFilesControl))
+        })
         ctx.effect(() => ctx.configForms.whileServed(['frpc-remote'], () => ctx.slots.inject('settings.section', () => ctx.slots.register({ name: 'settings.section', id: 'frpc-remote', order: 35, label: () => t('nav'), locale: NS, inject: () => ({ form }) }, Page))), 'frpc: settings navigation')
       },
     }

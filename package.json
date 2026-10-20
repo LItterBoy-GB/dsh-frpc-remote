@@ -1,6 +1,6 @@
 {
   "name": "dsh-frpc-remote",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "DeepSeek Harness 0.2.1-rc.2 remote access settings and managed frpc tunnel",
   "type": "module",
   "license": "MIT",
@@ -29,7 +29,7 @@
   ],
   "scripts": {
     "test": "node --test test/*.test.js",
-    "check": "node --check src/index.js && node --check src/config.js && node --check src/tunnel.js && node --check src/frpc-runtime.js && node --check client.js && node --test test/*.test.js"
+    "check": "node --check src/index.js && node --check src/config.js && node --check src/tunnel.js && node --check src/frpc-runtime.js && node --check src/host-files.js && node --check client.js && node --test test/*.test.js"
   },
   "engines": {
     "node": ">=22.19.0"
