@@ -6,31 +6,31 @@
 
 ## 安装
 
-先准备支持 TOML 和 `verify` 子命令的 frpc；本次验证使用官方 **frp 0.71.1**。插件不附带、也不自动下载或安装 frpc。
+程序路径默认为 `auto`。插件先检测系统 PATH 和已有安装；缺失时可点击「自动安装」，或在启用连接时自动下载官方 **frp 0.71.1**。下载包经过固定 SHA-256 校验，再验证程序版本；插件包本身不携带 frpc。
 
 从 GitHub 安装固定版本到现有桌面 profile：
 
 ```powershell
-dsh plugin --profile desktop add github:LItterBoy-GB/dsh-frpc-remote#v0.1.0
+dsh plugin --profile desktop add github:LItterBoy-GB/dsh-frpc-remote#v0.2.0
 ```
 
 源码直接运行，不需要安装脚本或构建。也可以在源码目录运行 `npm pack --ignore-scripts`，再安装生成的本地包：
 
 ```powershell
-dsh plugin --profile desktop add .\dsh-frpc-remote-0.1.0.tgz
+dsh plugin --profile desktop add .\dsh-frpc-remote-0.2.0.tgz
 ```
 
 如果 `dsh` 没有加入 PATH，使用桌面端自带的命令：
 
 ```powershell
-& "$env:LOCALAPPDATA\Programs\DeepSeek Harness\resources\runtime\cli\bin\dsh.cmd" plugin --profile desktop add .\dsh-frpc-remote-0.1.0.tgz
+& "$env:LOCALAPPDATA\Programs\DeepSeek Harness\resources\runtime\cli\bin\dsh.cmd" plugin --profile desktop add .\dsh-frpc-remote-0.2.0.tgz
 ```
 
 重新打开 dsh 后进入 **设置 → 远程访问**。默认关闭，没有服务器配置也能打开设置页。也可以将包安装到使用 `dsh-base`、`dsh-web-app` 的其他 Web profile；不要安装到 headless/SDK profile。
 
 ## 配置与使用
 
-1. 填写 frpc 可执行文件的完整路径、frps 地址、连接端口及 Token。
+1. 保留程序路径 `auto`，点击「检测路径」或「自动安装」；也可填写自备 frpc 的完整路径（支持含空格和中文的路径）。填写 frps 地址、连接端口及 Token。
 2. 选择代理类型：
    - **TCP**：填写 frps 对外映射端口。HTTPS 入口反向代理到这个 TCP 端口。
    - **HTTP**：按远程访问地址的域名创建 frp 虚拟主机代理，需要 frps 配置 `vhostHTTPPort`，入口反向代理再提供 HTTPS。
@@ -41,6 +41,15 @@ dsh plugin --profile desktop add .\dsh-frpc-remote-0.1.0.tgz
 修改配置时 Connection 会短暂重连。关闭开关会结束本插件持有的 frpc 子进程；卸载、退出和配置更新也会清理子进程及临时文件。不会结束其他已有 frpc 进程。
 
 Token 输入框不回显原值，空白保存保留原 Token，勾选「清除已保存的 Token」才清除。密钥以 dsh 原生 secret 配置字段保存到本机 profile，不使用系统密钥库；生成的临时 TOML 只包含环境变量模板，Token 通过子进程环境传入。不要分享包含凭据的 profile 文件。
+
+### 程序检测与自动下载
+
+- `auto`、空白以及旧配置 `frpc` / `frpc.exe` 均自动检测：系统 PATH → 已校验的插件缓存 → 旧版 DSH tools 安装目录。
+- 手动指定的路径会检查文件和版本。路径错误时显示原因，不会静默切换到其他程序；手动安装要求 frpc 0.52.0 或更新版本。
+- 远程访问关闭时只检测，不会自动下载或连接服务器；仍可主动点击「自动安装」。取消「缺失时自动下载 frpc」后，启用连接也不会触发下载。
+- 支持 Windows、Linux、macOS 的 x64 / ARM64 官方包。缓存位置为 `<DSH_HOME>/tools/frp-0.71.1/<系统>-<架构>/`，默认 DSH_HOME 为用户目录下的 `.dsh`。
+- 页面显示下载进度、检测结果、实际路径和版本。网络失败或校验失败可重试；也可手动下载官方客户端并填写完整路径。已有程序不会被自动覆盖。
+- 自动安装固定使用 [frp v0.71.1 官方 Release](https://github.com/fatedier/frp/releases/tag/v0.71.1)，不获取可变的 latest。仅 Windows x64 完成真实下载与执行验证；其他平台已验证包选择和解压逻辑，尚未做对应系统的运行验证。
 
 ## HTTPS 入口示例
 
@@ -102,11 +111,11 @@ npm run check
 npm pack
 ```
 
-源码不需要构建；`client.js` 使用 DSH 发布的 lazy-factory 模块协议，复用宿主 React、locale、settings slot 和 ConfigForms。保存走原生 revision 保护；Config 的 `secret` 字段经宿主脱敏；状态接口沿用 `Connection.requestRejection()`，不会提供匿名访问通道。
+源码不需要构建；`client.js` 使用 DSH 发布的 lazy-factory 模块协议，复用宿主 React、locale、settings slot 和 ConfigForms。保存走原生 revision 保护；Config 的 `secret` 字段经宿主脱敏；状态、检测和安装接口沿用 `Connection.requestRejection()`，不会提供匿名访问通道。安装与检测请求仅接受 POST，JSON 请求体上限为 8 KiB。
 
 包文件包含运行源码，源码 ZIP 另含测试与锁文件。`test/fixture-frpc.js` 是测试用 Node 子进程，不是 frpc 实现。
 
-本次验证：10 项单元/子进程测试；已安装 0.2.1-rc.2 的独立 profile 中打开设置并保存；该版本原生 WebServer/Connection 的认证和密钥脱敏；官方 frpc/frps 0.71.1 在 **127.0.0.1** 的真实转发、SSE、WebSocket、热关闭和端口释放。未连接任何正式服务器，也未配置真实公网入口。
+本次验证：20 项单元/子进程测试；已安装 0.2.1-rc.2 的独立 profile 中打开设置、检测与自动安装；该版本原生 WebServer/Connection 的认证、请求边界和密钥脱敏；官方 frpc/frps 0.71.1 在 **127.0.0.1** 的真实转发、SSE、WebSocket、热关闭和端口释放。隧道回归使用本机隔离服务。
 
 ## 卸载
 

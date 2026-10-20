@@ -1,18 +1,53 @@
 {
   "name": "dsh-frpc-remote",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "DeepSeek Harness 0.2.1-rc.2 remote access settings and managed frpc tunnel",
   "type": "module",
   "license": "MIT",
-  "repository": { "type": "git", "url": "git+https://github.com/LItterBoy-GB/dsh-frpc-remote.git" },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LItterBoy-GB/dsh-frpc-remote.git"
+  },
   "homepage": "https://github.com/LItterBoy-GB/dsh-frpc-remote#readme",
-  "bugs": { "url": "https://github.com/LItterBoy-GB/dsh-frpc-remote/issues" },
+  "bugs": {
+    "url": "https://github.com/LItterBoy-GB/dsh-frpc-remote/issues"
+  },
   "main": "src/index.js",
-  "exports": { ".": "./src/index.js", "./client": "./client.js", "./package.json": "./package.json" },
-  "files": ["src", "docs", "client.js", "cordis.patch.yml", "README.md", "LICENSE"],
-  "scripts": { "test": "node --test test/*.test.js", "check": "node --check src/index.js && node --check src/config.js && node --check src/tunnel.js && node --check client.js && node --test test/*.test.js" },
-  "engines": { "node": ">=22.19.0" },
-  "dependencies": { "@deepseek-ai/schemastery": "3.18.5" },
-  "peerDependencies": { "@deepseek-ai/cordis": "~4.0.5" },
-  "dsh": { "bundle": { "patch": "./cordis.patch.yml" }, "client": { "platform": "web" } }
+  "exports": {
+    ".": "./src/index.js",
+    "./client": "./client.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "src",
+    "docs",
+    "client.js",
+    "cordis.patch.yml",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "check": "node --check src/index.js && node --check src/config.js && node --check src/tunnel.js && node --check src/frpc-runtime.js && node --check client.js && node --test test/*.test.js"
+  },
+  "engines": {
+    "node": ">=22.19.0"
+  },
+  "dependencies": {
+    "@deepseek-ai/schemastery": "3.18.5",
+    "fflate": "0.8.3",
+    "tar-stream": "3.2.2"
+  },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "~4.0.5"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web"
+    }
+  }
 }

@@ -12,22 +12,31 @@ export function redact(message, secret) {
 
 /** Own exactly one frpc child (including verify), its retries and temporary file. */
 export class Tunnel {
-  constructor(config, local, onStatus = () => {}, spawnProcess = spawn) {
+  constructor(config, local, onStatus = () => {}, spawnProcess = spawn, resolveExecutable = async () => config.frpcPath) {
     this.config = validate(config)
     this.local = local
     this.onStatus = onStatus
     this.status = { state: config.enabled ? 'starting' : 'disabled', restarts: 0 }
     this.closed = false
     this.spawnProcess = spawnProcess
+    this.resolveExecutable = resolveExecutable
   }
   publish(patch) {
     this.status = { ...this.status, ...patch }
     this.onStatus(this.status)
   }
-  async start() {
-    if (!this.config.enabled || this.closed) return
+  start() {
+    if (!this.config.enabled || this.closed || this.child) return Promise.resolve()
+    if (!this.starting) this.starting = this.startInternal().finally(() => { this.starting = undefined })
+    return this.starting
+  }
+  async startInternal() {
+    this.publish({ state: 'starting', message: undefined, restarts: 0 })
     try {
       if (this.config.proxyType === 'http' && this.local.protocol === 'https:') throw new Error('HTTP 代理模式需要本机 DSH 使用 HTTP；本机 HTTPS 请使用 TCP 模式')
+      this.executable = await this.resolveExecutable()
+      if (this.closed) return
+      if (this.directory) await rm(this.directory, { recursive: true, force: true })
       this.directory = await mkdtemp(join(tmpdir(), 'dsh-frpc-'))
       if (this.closed) return
       this.file = join(this.directory, 'frpc.toml')
@@ -47,7 +56,7 @@ export class Tunnel {
   }
   verify() {
     return new Promise((resolve, reject) => {
-      const child = this.spawnProcess(this.config.frpcPath, ['verify', '-c', this.file], this.options())
+      const child = this.spawnProcess(this.executable, ['verify', '-c', this.file], this.options())
       this.child = child
       let output = ''
       const collect = (chunk) => { output = (output + chunk.toString()).slice(-8192) }
@@ -65,7 +74,7 @@ export class Tunnel {
   }
   launch() {
     if (this.closed) return
-    const child = this.spawnProcess(this.config.frpcPath, ['-c', this.file], this.options())
+    const child = this.spawnProcess(this.executable, ['-c', this.file], this.options())
     this.child = child
     this.publish({ state: 'connecting', message: undefined })
     let pending = ''

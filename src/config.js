@@ -2,7 +2,8 @@ import Schema from '@deepseek-ai/schemastery'
 
 export const fields = Schema.object({
   enabled: Schema.boolean().default(false).description('启用远程访问'),
-  frpcPath: Schema.string().default('frpc').description('frpc 可执行文件路径'),
+  frpcPath: Schema.string().default('auto').description('frpc 路径；auto 或留空自动检测'),
+  autoDownload: Schema.boolean().default(true).description('找不到 frpc 时自动下载并校验官方版本'),
   serverAddr: Schema.string().default('').description('frps 服务器地址'),
   serverPort: Schema.natural().min(1).max(65535).default(7000).description('frps 端口'),
   token: Schema.string().role('secret').default('').description('frps Token；留空保留已存值'),
@@ -19,7 +20,7 @@ export const fields = Schema.object({
 
 export function validate(config) {
   if (!config.enabled) return config
-  for (const key of ['frpcPath', 'serverAddr', 'proxyName', 'publicUrl']) {
+  for (const key of ['serverAddr', 'proxyName', 'publicUrl']) {
     if (!config[key]?.trim()) throw new Error(`${key} 不能为空`)
   }
   if (/\s|[\u0000-\u001f\u007f]/u.test(config.serverAddr)) throw new Error('serverAddr 只能填写主机名或 IP')

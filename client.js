@@ -28,100 +28,143 @@ window.__ModuleLoader__.load({
       status: 'Connection', refresh: 'Refresh status', open: 'Open remote entry', copy: 'Copy access link', copied: 'Access link copied. It contains a token; share only with trusted operators.', statusFailure: 'Status unavailable; retrying automatically.', disabled: 'Disabled', starting: 'Preparing', connecting: 'Connecting', connected: 'Proxy connected', retrying: 'Restart pending', error: 'Connection failed',
       invalidRequired: 'Provide the executable, server address, proxy name and public URL before enabling.', invalidUrl: 'Enter an HTTP(S) root URL without credentials, query or path.', insecure: 'Explicitly allow plain HTTP to use this URL.', invalidPort: 'Ports must be integers from 1 to 65535.', invalidAdvanced: 'Restart delay: 500–60000; restart count: 0–20.', nameHint: 'Must be unique on the same frps server.', secretSet: 'Token configured', secretEmpty: 'Token not configured',
     }
-    const css = `.dsh-frpc{max-width:720px;display:grid;gap:20px;font:inherit;color:inherit}.dsh-frpc h2{margin:0;font-size:20px}.dsh-frpc p{margin:0;line-height:1.6;opacity:.8}.dsh-frpc-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.dsh-frpc label{display:grid;gap:7px;font-size:14px;min-width:0}.dsh-frpc input:not([type=checkbox]),.dsh-frpc select{box-sizing:border-box;width:100%;min-height:40px;border:1px solid color-mix(in srgb,currentColor 25%,transparent);border-radius:7px;padding:8px 10px;background:transparent;color:inherit;font:inherit}.dsh-frpc input:focus-visible,.dsh-frpc select:focus-visible,.dsh-frpc button:focus-visible,.dsh-frpc summary:focus-visible{outline:2px solid #3b82f6;outline-offset:2px}.dsh-frpc .dsh-frpc-check{display:flex;align-items:center;gap:9px;min-height:40px}.dsh-frpc small{line-height:1.5;opacity:.75}.dsh-frpc button,.dsh-frpc a{font:inherit;padding:9px 14px;min-height:40px;border-radius:7px;border:1px solid color-mix(in srgb,currentColor 30%,transparent);background:transparent;color:inherit;cursor:pointer;text-decoration:none}.dsh-frpc button:disabled{opacity:.5;cursor:default}.dsh-frpc button[type=submit]{background:#2563eb;color:white;border-color:#2563eb}.dsh-frpc-status{border:1px solid color-mix(in srgb,currentColor 20%,transparent);border-radius:10px;padding:16px;display:grid;gap:12px}.dsh-frpc-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.dsh-frpc [role=alert]{color:#d45454}.dsh-frpc details>div{margin-top:16px;display:grid;gap:16px}.dsh-frpc summary{cursor:pointer;padding:8px 0}.dsh-frpc output{font-weight:600}.dsh-frpc pre{white-space:pre-wrap;overflow-wrap:anywhere;margin:0;font-size:12px}@media(max-width:600px){.dsh-frpc-grid{grid-template-columns:1fr}}`
-
+    Object.assign(zh, {
+      title: '远程访问', intro: '通过 frpc 连接本机 dsh，继续使用访问令牌认证。', enabledHint: '保存后应用；关闭时释放本插件的隧道。',
+      program: 'frpc 程序', server: '服务器', entry: '访问入口', frpcPath: '程序路径', pathHint: 'auto 或留空自动检测，也可填写完整路径。',
+      autoDownload: '缺失时自动下载 frpc', autoDownloadHint: '启用连接时使用官方固定版本，下载后校验 SHA-256。', check: '检测路径', checking: '正在检测…', install: '自动安装', installing: '正在安装…', installed: '已安装并校验。保存后使用自动检测路径。', checked: '路径检测完成。',
+      runtimeTitle: '程序检测', unchecked: '尚未检测', missing: '未找到程序', downloading: '正在下载', verifying: '正在校验', ready: '程序就绪', source_path: '系统 PATH', source_custom: '手动路径', source_managed: '自动安装', source_existing: '已有安装',
+      required: '请填写此项。', invalidDelay: '请输入 500–60000 的整数。', invalidRestarts: '请输入 0–20 的整数。', invalidDomain: 'HTTP 模式需要域名。', invalidServer: '只填写主机名或 IP，不含空格。', actionFailure: '操作失败，请检查网络或手动填写程序路径。', copyFailure: '复制失败，请使用“打开远程入口”。',
+    })
+    Object.assign(en, {
+      title: 'Remote access', intro: 'Connect to this dsh host through frpc with launch-token authentication.', enabledHint: 'Applied on save. Disabling releases this plugin’s tunnel.', program: 'frpc program', server: 'Server', entry: 'Public entry', frpcPath: 'Executable path', pathHint: 'Use auto or leave blank to detect; a full path also works.',
+      autoDownload: 'Download frpc when missing', autoDownloadHint: 'Connect using a pinned official release, verified with SHA-256.', check: 'Check path', checking: 'Checking…', install: 'Install automatically', installing: 'Installing…', installed: 'Installed and verified. Save to use automatic detection.', checked: 'Path check complete.', runtimeTitle: 'Program check', unchecked: 'Not checked', missing: 'Program missing', downloading: 'Downloading', verifying: 'Verifying', ready: 'Program ready', source_path: 'System PATH', source_custom: 'Custom path', source_managed: 'Managed installation', source_existing: 'Existing installation',
+      required: 'Complete this field.', invalidDelay: 'Enter an integer from 500 to 60000.', invalidRestarts: 'Enter an integer from 0 to 20.', invalidDomain: 'HTTP mode requires a domain.', invalidServer: 'Enter a hostname or IP without spaces.', actionFailure: 'Operation failed. Check the network or enter a program path.', copyFailure: 'Copy failed. Use “Open remote entry” instead.',
+    })
+    const css = `
+.frpc-page{container:frpc / inline-size;max-width:760px;min-width:0;color:inherit;font:inherit}
+.frpc-form{--frpc-accent:#2563eb;--frpc-good:light-dark(#15803d,#86efac);--frpc-error:light-dark(#dc2626,#fca5a5);--frpc-line:color-mix(in srgb,currentColor 18%,transparent);--frpc-muted:color-mix(in srgb,currentColor 68%,transparent);display:grid;gap:20px;min-width:0;padding:2px 0 12px}
+.frpc-form *{box-sizing:border-box}.frpc-form h2,.frpc-form h3,.frpc-form p{margin:0}.frpc-form h2{font-size:20px;font-weight:600;line-height:1.4}.frpc-form h3{font-size:14px;font-weight:600;line-height:20px}
+.frpc-head{display:flex;align-items:center;justify-content:space-between;gap:12px}.frpc-intro,.frpc-help{font-size:12px;line-height:1.65;color:var(--frpc-muted)}
+.frpc-status{display:inline-flex;align-items:center;gap:7px;white-space:nowrap;font-size:12px;line-height:24px;font-weight:500}.frpc-status:before{content:'';width:7px;height:7px;border-radius:50%;background:currentColor;flex:none}.frpc-status[data-state=connected],.frpc-status[data-state=ready]{color:var(--frpc-good)}.frpc-form .frpc-status[data-state=error],.frpc-form .frpc-error{color:var(--frpc-error)}
+.frpc-section{display:grid;gap:16px;border-top:1px solid var(--frpc-line);padding-top:20px;min-width:0}.frpc-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;align-items:start}
+.frpc-field{display:grid;grid-template-rows:20px 42px auto;gap:7px;min-width:0;align-content:start}.frpc-form .frpc-label{display:block;font-size:13px;font-weight:500;line-height:20px;margin:0;padding:0;white-space:nowrap}
+.frpc-form .frpc-control{display:block;width:100%;min-width:0;max-width:100%;height:42px;min-height:42px;margin:0;border:1px solid var(--frpc-line);border-radius:6px;padding:9px 11px;background:transparent;color:inherit;font:inherit;font-size:14px;line-height:22px;box-shadow:none}.frpc-form select.frpc-control{padding-right:28px}.frpc-form .frpc-control[aria-invalid=true]{border-color:var(--frpc-error)}
+.frpc-form .frpc-check{display:flex;align-items:center;gap:10px;min-height:42px;font-size:13px;line-height:20px;margin:0;padding:0;cursor:pointer}.frpc-form .frpc-check input{appearance:auto;display:block;flex:0 0 17px;width:17px;height:17px;min-height:17px;margin:0;padding:0;accent-color:var(--frpc-accent);border-radius:3px}
+.frpc-enable{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:52px}.frpc-enable .frpc-help{max-width:260px;text-align:right}.frpc-program-actions,.frpc-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.frpc-form .frpc-button{display:inline-flex;align-items:center;justify-content:center;gap:6px;max-width:100%;min-height:42px;margin:0;border:1px solid var(--frpc-line);border-radius:6px;padding:9px 14px;background:transparent;color:inherit;font:inherit;font-size:13px;line-height:22px;text-decoration:none;cursor:pointer;white-space:nowrap}.frpc-form .frpc-button-primary{border-color:var(--frpc-accent);background:var(--frpc-accent);color:#fff}.frpc-form .frpc-button:disabled,.frpc-form .frpc-control:disabled{opacity:.55;cursor:default}
+.frpc-form .frpc-control:focus-visible,.frpc-form .frpc-button:focus-visible,.frpc-form .frpc-check input:focus-visible,.frpc-form summary:focus-visible{outline:2px solid var(--frpc-accent);outline-offset:3px}
+.frpc-runtime{display:grid;gap:8px;border-left:2px solid var(--frpc-line);padding:0 0 0 12px;min-width:0}.frpc-runtime[data-state=ready]{border-color:var(--frpc-good)}.frpc-runtime[data-state=error]{border-color:var(--frpc-error)}.frpc-runtime-title{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:12px}.frpc-path{font:inherit;font-size:12px;line-height:1.6;overflow-wrap:anywhere;white-space:pre-wrap;color:var(--frpc-muted);margin:0}.frpc-progress{width:100%;height:5px;accent-color:var(--frpc-accent)}
+.frpc-error{font-size:12px;line-height:1.6;margin:0;overflow-wrap:anywhere}.frpc-notice{font-size:12px;line-height:1.6}.frpc-details summary{font-size:13px;line-height:22px;cursor:pointer;padding:8px 0}.frpc-details-content{display:grid;gap:16px;padding-top:12px}.frpc-footer{display:grid;gap:10px;border-top:1px solid var(--frpc-line);padding-top:18px}.frpc-connection-message{white-space:pre-wrap;overflow-wrap:anywhere;font-size:12px;line-height:1.6;margin:0}
+@container frpc (min-width:540px){.frpc-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
+@container frpc (max-width:360px){.frpc-enable{align-items:flex-start;flex-direction:column;gap:0}.frpc-enable .frpc-help{text-align:left}.frpc-head{align-items:flex-start;flex-direction:column;gap:2px}.frpc-form .frpc-button{white-space:normal}}
+`
+    function errorsFor(draft) {
+      const errors = {}
+      const integer = (key, min, max, message) => { if (!Number.isInteger(draft[key]) || draft[key] < min || draft[key] > max) errors[key] = message }
+      integer('serverPort', 1, 65535, 'invalidPort'); integer('remotePort', 0, 65535, 'invalidPort')
+      integer('restartDelayMs', 500, 60000, 'invalidDelay'); integer('maxRestarts', 0, 20, 'invalidRestarts')
+      if (!draft.enabled) return errors
+      for (const key of ['serverAddr', 'proxyName', 'publicUrl']) if (!draft[key]?.trim()) errors[key] = 'required'
+      if (/\s|[\u0000-\u001f\u007f]/.test(draft.serverAddr)) errors.serverAddr = 'invalidServer'
+      let url
+      try { url = new URL(draft.publicUrl) } catch (_) { errors.publicUrl = 'invalidUrl' }
+      if (url) {
+        if (!/^https?:$/.test(url.protocol) || url.pathname !== '/' || /[\s\\?#@]/.test(draft.publicUrl)) errors.publicUrl = 'invalidUrl'
+        else if (url.protocol === 'http:' && !draft.allowInsecureHttp) errors.publicUrl = 'insecure'
+        if (draft.proxyType === 'http' && (url.hostname.startsWith('[') || /^\d+(\.\d+){3}$/.test(url.hostname))) errors.publicUrl = 'invalidDomain'
+      }
+      if (draft.proxyType === 'tcp') integer('remotePort', 1, 65535, 'invalidPort')
+      return errors
+    }
     function Page({ form, t }) {
       const state = React.useSyncExternalStore(form.subscribe.bind(form), form.getSnapshot.bind(form))
-      const [draft, setDraft] = React.useState(null)
-      const [revision, setRevision] = React.useState()
-      const [notice, setNotice] = React.useState('')
-      const [error, setError] = React.useState('')
-      const [saving, setSaving] = React.useState(false)
-      const [clearToken, setClearToken] = React.useState(false)
-      const [status, setStatus] = React.useState(null)
-      const [statusError, setStatusError] = React.useState(false)
+      const id = React.useId()
+      const [draft, setDraft] = React.useState(null), [revision, setRevision] = React.useState()
+      const [notice, setNotice] = React.useState(''), [error, setError] = React.useState(''), [errors, setErrors] = React.useState({})
+      const [saving, setSaving] = React.useState(false), [clearToken, setClearToken] = React.useState(false)
+      const [status, setStatus] = React.useState(null), [statusError, setStatusError] = React.useState(false), [action, setAction] = React.useState(null)
+      const actionController = React.useRef()
       React.useEffect(() => {
-        if (state.status === 'ready' && !draft) {
-          setDraft({ ...state.value, token: '' })
-          setRevision(state.revision)
-        }
+        if (state.status === 'ready' && !draft) { setDraft({ ...state.value, autoDownload: state.value.autoDownload ?? true, token: '' }); setRevision(state.revision) }
       }, [state, draft])
       React.useEffect(() => {
-        const controller = new AbortController()
-        let timer
+        const controller = new AbortController(); let timer
         const poll = async () => {
           try {
-            const response = await fetch('./frpc-remote/status', { credentials: 'same-origin', cache: 'no-store', signal: controller.signal })
+            const response = await fetch('./frpc-remote/status', { credentials: 'same-origin', cache: 'no-store', signal: AbortSignal.any([controller.signal, AbortSignal.timeout(8000)]) })
             if (!response.ok) throw new Error('status')
             const value = await response.json()
             if (!controller.signal.aborted) { setStatus(value); setStatusError(false) }
           } catch (_) { if (!controller.signal.aborted) setStatusError(true) }
-          if (!controller.signal.aborted) timer = setTimeout(poll, 3000)
+          if (!controller.signal.aborted) timer = setTimeout(poll, 1500)
         }
         void poll()
-        return () => { controller.abort(); clearTimeout(timer) }
+        return () => { controller.abort(); clearTimeout(timer); actionController.current?.abort() }
       }, [])
       if (!draft) return h('p', { role: 'status' }, t(state.status === 'unavailable' ? 'unavailable' : 'loading'))
-      const change = (key, value) => { setDraft((old) => ({ ...old, [key]: value })); setNotice(''); setError('') }
-      const field = (key, type = 'text', hint) => h('label', { key }, t(key), h('input', { name: key, type,
-        value: draft[key] ?? '', disabled: saving, autoComplete: type === 'password' ? 'new-password' : 'off',
-        min: type === 'number' ? 0 : undefined, onChange: (event) => change(key, type === 'number' ? (event.target.value === '' ? '' : Number(event.target.value)) : event.target.value) }),
-        hint ? h('small', null, t(hint)) : null)
-      const check = (key) => h('label', { className: 'dsh-frpc-check', key }, h('input', { type: 'checkbox', checked: Boolean(draft[key]), disabled: saving, onChange: (event) => change(key, event.target.checked) }), t(key))
-      const validate = () => {
-        if (!Number.isInteger(draft.serverPort) || draft.serverPort < 1 || draft.serverPort > 65535) return 'invalidPort'
-        if (!Number.isInteger(draft.restartDelayMs) || draft.restartDelayMs < 500 || draft.restartDelayMs > 60000 || !Number.isInteger(draft.maxRestarts) || draft.maxRestarts < 0 || draft.maxRestarts > 20) return 'invalidAdvanced'
-        if (!draft.enabled) return ''
-        if (['frpcPath', 'serverAddr', 'proxyName', 'publicUrl'].some((key) => !draft[key]?.trim())) return 'invalidRequired'
-        let url
-        try { url = new URL(draft.publicUrl) } catch (_) { return 'invalidUrl' }
-        if (!/^https?:$/.test(url.protocol) || url.pathname !== '/' || /[\s\\?#@]/.test(draft.publicUrl)) return 'invalidUrl'
-        if (url.protocol === 'http:' && !draft.allowInsecureHttp) return 'insecure'
-        if (draft.proxyType === 'tcp' && (!Number.isInteger(draft.remotePort) || draft.remotePort < 1 || draft.remotePort > 65535)) return 'invalidPort'
-        return ''
+      const runtime = status?.runtime || { state: 'unchecked' }
+      const busy = Boolean(action) || ['checking', 'downloading', 'verifying'].includes(runtime.state)
+      const change = (key, value) => { setDraft(old => ({ ...old, [key]: value })); setNotice(''); setError(''); setErrors(old => ({ ...old, [key]: undefined })) }
+      const field = (key, type = 'text', hint) => h('div', { className: 'frpc-field', key },
+        h('label', { className: 'frpc-label', htmlFor: id + key }, t(key)),
+        h('input', { className: 'frpc-control', id: id + key, name: key, type, value: draft[key] ?? '', disabled: saving, autoComplete: type === 'password' ? 'new-password' : 'off', 'aria-invalid': errors[key] ? true : undefined, 'aria-describedby': hint || errors[key] ? id + key + '-help' : undefined,
+          onBlur: () => setErrors(old => ({ ...old, [key]: errorsFor(draft)[key] })), onChange: event => change(key, type === 'number' ? (event.target.value === '' ? '' : Number(event.target.value)) : event.target.value) }),
+        hint || errors[key] ? h('div', { id: id + key + '-help', className: errors[key] ? 'frpc-error' : 'frpc-help', role: errors[key] ? 'alert' : undefined }, t(errors[key] || hint)) : null)
+      const check = key => h('label', { className: 'frpc-check', key }, h('input', { type: 'checkbox', name: key, checked: Boolean(draft[key]), disabled: saving, onChange: event => change(key, event.target.checked) }), t(key))
+      const runAction = async operation => {
+        setAction(operation); setNotice(''); setError(''); actionController.current = new AbortController()
+        try {
+          const response = await fetch(`./frpc-remote/runtime/${operation}`, { method: 'POST', credentials: 'same-origin', cache: 'no-store', headers: { 'content-type': 'application/json' }, body: JSON.stringify(operation === 'check' ? { frpcPath: draft.frpcPath || 'auto' } : {}), signal: actionController.current.signal })
+          const result = await response.json()
+          if (result.runtime) setStatus(old => ({ ...old, runtime: result.runtime }))
+          if (!response.ok) throw new Error(result.error || t('actionFailure'))
+          if (operation === 'install') { change('frpcPath', 'auto'); setNotice(t('installed')) }
+          else setNotice(t('checked'))
+        } catch (failure) { if (!actionController.current.signal.aborted) setError(failure.message || t('actionFailure')) }
+        finally { setAction(null) }
       }
-      const save = async (event) => {
-        event.preventDefault()
-        const invalid = validate()
-        if (invalid) { setError(t(invalid)); return }
+      const save = async event => {
+        event.preventDefault(); const invalid = errorsFor(draft); setErrors(invalid)
+        if (Object.keys(invalid).length) return
         setSaving(true); setError(''); setNotice('')
         const ops = Object.entries(draft).filter(([key]) => key !== 'token').map(([key, value]) => ({ op: 'set', path: [key], value }))
         if (clearToken || draft.token) ops.push({ op: 'set', path: ['token'], value: clearToken ? '' : draft.token })
         try {
-          const accepted = await form.mutate(ops, revision)
-          if (!accepted) throw new Error('rejected')
+          if (!await form.mutate(ops, revision)) throw new Error('rejected')
           setDraft(null); setClearToken(false); setNotice(t('saved'))
         } catch (_) { setError(t('failure')) }
         finally { setSaving(false) }
       }
-      return h('form', { className: 'dsh-frpc', onSubmit: save, 'aria-label': t('nav') },
-        h('h2', null, t('title')), h('p', null, t('description')), check('enabled'),
-        field('frpcPath'), h('div', { className: 'dsh-frpc-grid' }, field('serverAddr'), field('serverPort', 'number')),
-        field('token', 'password', 'tokenHint'), h('label', { className: 'dsh-frpc-check' }, h('input', { type: 'checkbox', checked: clearToken, disabled: saving, onChange: (event) => setClearToken(event.target.checked) }), t('clearToken')),
-        h('div', { className: 'dsh-frpc-grid' }, field('proxyName', 'text', 'nameHint'), h('label', null, t('proxyType'), h('select', { value: draft.proxyType, disabled: saving, onChange: (event) => change('proxyType', event.target.value) }, h('option', { value: 'tcp' }, 'TCP'), h('option', { value: 'http' }, 'HTTP')))),
-        draft.proxyType === 'tcp' ? field('remotePort', 'number') : null, field('publicUrl', 'url', 'publicHint'),
-        h('details', null, h('summary', null, t('advanced')), h('div', null, field('trustedCaFile'), field('tlsServerName'), check('allowInsecureHttp'), h('div', { className: 'dsh-frpc-grid' }, field('restartDelayMs', 'number'), field('maxRestarts', 'number')))),
-        h('div', { className: 'dsh-frpc-actions' }, h('button', { type: 'submit', disabled: saving || !state.writable }, t(saving ? 'saving' : 'save'))),
-        error ? h('p', { role: 'alert' }, error) : null, notice ? h('p', { role: 'status' }, notice) : null,
-        h('section', { className: 'dsh-frpc-status', 'aria-label': t('status') }, h('div', null, `${t('status')}: `, h('output', { 'aria-live': 'polite' }, t(status?.state || 'starting'))),
-          statusError ? h('p', { role: 'status' }, t('statusFailure')) : null, status?.message ? h('pre', null, status.message) : null,
-          status?.accessUrl ? h('div', { className: 'dsh-frpc-actions' }, h('a', { href: status.accessUrl, target: '_blank', rel: 'noreferrer' }, t('open')), h('button', { type: 'button', onClick: async () => {
-            try { await navigator.clipboard.writeText(status.accessUrl); setNotice(t('copied')) } catch (_) { setError(t('failure')) }
-          } }, t('copy'))) : null))
+      const progress = runtime.total ? Math.min(100, Math.floor(runtime.received / runtime.total * 100)) : undefined
+      const button = (text, onClick, disabled = false) => h('button', { className: 'frpc-button', type: 'button', onClick, disabled }, text)
+      return h('div', { className: 'frpc-page' }, h('form', { className: 'frpc-form', onSubmit: save, 'aria-label': t('nav'), noValidate: true },
+        h('header', { className: 'frpc-head' }, h('h2', null, t('title')), h('output', { className: 'frpc-status', 'data-state': status?.state, 'aria-label': t('status'), 'aria-live': 'polite' }, t(status?.state || 'starting'))),
+        h('p', { className: 'frpc-intro' }, t('intro')), h('div', { className: 'frpc-enable' }, check('enabled'), h('p', { className: 'frpc-help' }, t('enabledHint'))),
+        h('section', { className: 'frpc-section', 'aria-label': t('program') }, h('h3', null, t('program')), field('frpcPath', 'text', 'pathHint'),
+          h('div', { className: 'frpc-program-actions' }, button(t(action === 'check' ? 'checking' : 'check'), () => runAction('check'), busy || saving), button(t(action === 'install' ? 'installing' : 'install'), () => runAction('install'), busy || saving)),
+          h('div', { className: 'frpc-runtime', 'data-state': runtime.state, 'aria-label': t('runtimeTitle') }, h('div', { className: 'frpc-runtime-title' }, h('output', { className: 'frpc-status', 'data-state': runtime.state, 'aria-live': 'polite' }, t(runtime.state)), runtime.version ? h('span', null, runtime.version) : null),
+            runtime.path ? h('p', { className: 'frpc-path' }, runtime.path) : null, runtime.source ? h('p', { className: 'frpc-help' }, t(`source_${runtime.source}`)) : null,
+            runtime.state === 'downloading' ? h('progress', { className: 'frpc-progress', max: 100, value: progress, 'aria-label': t('downloading') }) : null,
+            runtime.state === 'downloading' ? h('span', { className: 'frpc-help' }, progress === undefined ? `${((runtime.received || 0) / 1048576).toFixed(1)} MB` : `${progress}%`) : null,
+            runtime.message ? h('p', { className: runtime.state === 'error' ? 'frpc-error' : 'frpc-help' }, runtime.message) : null),
+          h('div', null, check('autoDownload'), h('p', { className: 'frpc-help' }, t('autoDownloadHint')))),
+        h('section', { className: 'frpc-section', 'aria-label': t('server') }, h('h3', null, t('server')), h('div', { className: 'frpc-grid' }, field('serverAddr'), field('serverPort', 'number')), field('token', 'password', 'tokenHint'),
+          h('div', { className: 'frpc-actions' }, h('label', { className: 'frpc-check' }, h('input', { type: 'checkbox', checked: clearToken, disabled: saving, onChange: event => setClearToken(event.target.checked) }), t('clearToken')), h('span', { className: 'frpc-help' }, t(status?.tokenConfigured ? 'secretSet' : 'secretEmpty')))),
+        h('section', { className: 'frpc-section', 'aria-label': t('entry') }, h('h3', null, t('entry')), h('div', { className: 'frpc-grid' }, field('proxyName'), h('div', { className: 'frpc-field' }, h('label', { className: 'frpc-label', htmlFor: id + 'proxyType' }, t('proxyType')), h('select', { className: 'frpc-control', id: id + 'proxyType', value: draft.proxyType, disabled: saving, onChange: event => change('proxyType', event.target.value) }, h('option', { value: 'tcp' }, 'TCP'), h('option', { value: 'http' }, 'HTTP')))),
+          h('p', { className: 'frpc-help' }, t('nameHint')), draft.proxyType === 'tcp' ? field('remotePort', 'number') : null, field('publicUrl', 'url', 'publicHint')),
+        h('details', { className: 'frpc-details' }, h('summary', null, t('advanced')), h('div', { className: 'frpc-details-content' }, h('div', { className: 'frpc-grid' }, field('trustedCaFile'), field('tlsServerName')), check('allowInsecureHttp'), h('div', { className: 'frpc-grid' }, field('restartDelayMs', 'number'), field('maxRestarts', 'number')))),
+        h('footer', { className: 'frpc-footer' }, h('div', { className: 'frpc-actions' }, h('button', { className: 'frpc-button frpc-button-primary', type: 'submit', disabled: saving || busy || !state.writable }, t(saving ? 'saving' : 'save'))),
+          error ? h('p', { className: 'frpc-error', role: 'alert' }, error) : null, notice ? h('p', { className: 'frpc-notice', role: 'status' }, notice) : null,
+          statusError ? h('p', { className: 'frpc-help', role: 'status' }, t('statusFailure')) : null, status?.message ? h('p', { className: 'frpc-connection-message' }, status.message) : null,
+          status?.accessUrl ? h('div', { className: 'frpc-actions' }, h('a', { className: 'frpc-button', href: status.accessUrl, target: '_blank', rel: 'noreferrer' }, t('open')), button(t('copy'), async () => { try { await navigator.clipboard.writeText(status.accessUrl); setNotice(t('copied')) } catch (_) { setError(t('copyFailure')) } })) : null)))
     }
     return {
       inject: ['slots', 'locale', 'configForms'],
       apply(ctx) {
         ctx.effect(() => ctx.locale.register(NS, { zh, en }), 'frpc: locales')
-        ctx.effect(() => {
-          const style = document.createElement('style'); style.textContent = css; style.dataset.plugin = 'dsh-frpc-remote'; document.head.append(style)
-          return () => style.remove()
-        }, 'frpc: styles')
-        const t = ctx.locale.bind(NS)
-        const form = ctx.configForms.get('frpc-remote')
-        ctx.effect(() => ctx.configForms.whileServed(['frpc-remote'], () => ctx.slots.inject('settings.section', () => ctx.slots.register({
-          name: 'settings.section', id: 'frpc-remote', order: 35, label: () => t('nav'), locale: NS, inject: () => ({ form }),
-        }, Page))), 'frpc: settings navigation')
+        ctx.effect(() => { const style = document.createElement('style'); style.textContent = css; style.dataset.plugin = 'dsh-frpc-remote'; document.head.append(style); return () => style.remove() }, 'frpc: styles')
+        const t = ctx.locale.bind(NS), form = ctx.configForms.get('frpc-remote')
+        ctx.effect(() => ctx.configForms.whileServed(['frpc-remote'], () => ctx.slots.inject('settings.section', () => ctx.slots.register({ name: 'settings.section', id: 'frpc-remote', order: 35, label: () => t('nav'), locale: NS, inject: () => ({ form }) }, Page))), 'frpc: settings navigation')
       },
     }
   },
